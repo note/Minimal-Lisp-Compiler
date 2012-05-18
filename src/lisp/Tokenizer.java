@@ -56,6 +56,9 @@ public class Tokenizer {
 	
 	public Token nextToken(){
 		Token token;
+		
+		
+		
 		Iterator<CodeAndPattern> it = patterns.iterator();
 		while(it.hasNext()){
 			token = getToken(it.next());

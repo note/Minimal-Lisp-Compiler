@@ -49,6 +49,11 @@ public class TokenizerTest {
 		doTest("34.43d0", Token.DOUBLE);
 		doTest("0.d55", Token.DOUBLE);
 		doTest("3.3", Token.FLOAT);
+		
+		tokenizer.loadInput("(let 4");
+		assertEquals(Token.OPENING_PARENTHESIS, tokenizer.nextToken().getCode());
+		assertEquals(Token.SYMBOL, tokenizer.nextToken().getCode());
+		assertEquals(Token.INT, tokenizer.nextToken().getCode());
 	}
 
 }
