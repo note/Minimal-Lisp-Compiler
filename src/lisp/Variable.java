@@ -1,8 +1,7 @@
 package lisp;
 
-public class Function implements ILispForm{
-	
-	public Function(String Name){
+public class Variable implements ILispForm{
+	public Variable(String name){
 		
 	}
 

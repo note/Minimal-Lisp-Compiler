@@ -36,12 +36,18 @@ public class Tokenizer {
 		patterns.add(new CodeAndPattern(Token.DOUBLE, begin + "([\\+-]?[0-9]+\\.[0-9]*d[0-9]+)" + end));
 		patterns.add(new CodeAndPattern(Token.STRING, begin + "\"(.*)\"" + end));
 		patterns.add(new CodeAndPattern(Token.SYMBOL, begin + "([^\\s\\(\\)'\"`,:;\\\\|]+)" + end));
+		patterns.add(new CodeAndPattern(Token.COMMENT, begin + ";([^\n]*)"));
+		patterns.add(new CodeAndPattern(Token.UNEXPECTED, begin + "(.+)" + end));
 	}
 	
 	String input;
 	
 	public void loadInput(String text){
 		input = text;
+		
+		Pattern windowsEndOfLinePattern = Pattern.compile("\r\n");
+		Matcher matcher = windowsEndOfLinePattern.matcher(text);
+		matcher.replaceAll("\n");
 	}
 	
 	private Token getToken(CodeAndPattern cap){

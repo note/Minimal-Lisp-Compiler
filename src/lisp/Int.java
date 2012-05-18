@@ -1,9 +1,10 @@
 package lisp;
 
-public class Function implements ILispForm{
+public class Int implements ILispForm{
+	int value;
 	
-	public Function(String Name){
-		
+	public Int(String value){
+		this.value = Integer.parseInt(value);
 	}
 
 	@Override
@@ -11,5 +12,5 @@ public class Function implements ILispForm{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

@@ -50,9 +50,13 @@ public class TokenizerTest {
 		doTest("0.d55", Token.DOUBLE);
 		doTest("3.3", Token.FLOAT);
 		
-		tokenizer.loadInput("(let 4");
+		doTest(";comment\n 33", Token.COMMENT, "comment");
+		
+		tokenizer.loadInput("(let 4 ;comment\n 3");
 		assertEquals(Token.OPENING_PARENTHESIS, tokenizer.nextToken().getCode());
 		assertEquals(Token.SYMBOL, tokenizer.nextToken().getCode());
+		assertEquals(Token.INT, tokenizer.nextToken().getCode());
+		assertEquals(Token.COMMENT, tokenizer.nextToken().getCode());
 		assertEquals(Token.INT, tokenizer.nextToken().getCode());
 	}
 

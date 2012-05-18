@@ -10,6 +10,7 @@ public class Token {
 	public final static int SYMBOL = 7;
 	public final static int COMMENT = 8;
 	public final static int EOF = 9;
+	public final static int UNEXPECTED = 10;
 	
 	int code;
 	String value;
