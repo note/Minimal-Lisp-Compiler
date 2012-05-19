@@ -22,10 +22,10 @@ public class Defun extends SpecialOperator{
 	}
 
 	private void createFunctionClass(String className){
-		ClassWriter cw = new ClassWriter(0);
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 		Factory.setClassWriter(cw);
 		
-		cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT, className, null, "java/lang/Object", new String[] {});
+		cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", new String[] {});
 	}
 	
 	private void saveFile(ClassWriter cw){

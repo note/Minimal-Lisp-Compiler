@@ -41,6 +41,7 @@ public class Parser {
 			if(token.getCode() == Token.OPENING_PARENTHESIS){
 				newForm = new List();
 				((List) newForm).setChildren(read(tokenizer, st, openedParenthesis + 1));
+				params.add(newForm);
 			}else if(token.getCode() == Token.CLOSING_PARENTHESIS){
 				if(openedParenthesis < 1)
 					throw new SyntaxException("Unmatched close parenthesis");
@@ -121,7 +122,8 @@ public class Parser {
 	public static void main(String [] args){
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(print 77) (print 34)");
+		//tokenizer.loadInput("(print 77) (print 34)");
+		tokenizer.loadInput("(print (plus 3 12))");
 		p.compile(tokenizer);
 	}
 }
