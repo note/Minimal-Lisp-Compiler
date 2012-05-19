@@ -63,7 +63,10 @@ public class Symbol implements ILispForm{
 		//todo: very simple aproach so far. the value returned by resolveFunction should be checked (if return value is -1 then function cannot be found)
 		
 		for(int i=0; i<parameters.size(); ++i)
-			mv.visitLdcInsn(4);
+			if(parameters.get(i) instanceof Int)
+				mv.visitLdcInsn(((Int) parameters.get(i)).getValue());
+			else
+				mv.visitLdcInsn(0);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, name, "invoke", getMethodDescriptor(parameters.size()));
 	}
 	

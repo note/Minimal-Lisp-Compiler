@@ -3,6 +3,8 @@ package lisp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+
+
 public class Parser {
 	private List createEmptyList(){
 		return new List();
@@ -13,6 +15,12 @@ public class Parser {
 		if(st.isSpecialOperator(name))
 			return st.getNewSpecialOperatorInstance(name);
 		return new Symbol(name);
+	}
+	
+	private List createForm(String name, SymbolTable st){
+		List res = new List();
+		res.addChild(createSymbol(name, st));
+		return res;
 	}
 	
 	private java.util.List<ILispForm> read(Tokenizer tokenizer, SymbolTable st, int openedParenthesis) throws SyntaxException{
@@ -77,22 +85,20 @@ public class Parser {
 		java.util.List<ILispForm> res = new ArrayList<ILispForm>();
 		SymbolTable st = new SymbolTable();
 		
-		Symbol mainDefun = createSymbol("defun", st);
-		mainDefun.addParameter(createSymbol("Main", st));
-		mainDefun.addParameter(createEmptyList());
-		List mainParameters = new List();
+		List mainDefun = createForm("defun", st);
+		mainDefun.addChildToForm(createSymbol("Main", st));
+		mainDefun.addChildToForm(createEmptyList());
+		List progn = createForm("progn", st);
+		mainDefun.addChildToForm(progn);
 		
 		for(ILispForm it : tree){
 			if(it instanceof List && !((List) it).isDefun())
-				mainParameters.addChild(it);
+				progn.addChildToForm(it);
 			else
 				res.add(it);
 		}
-		mainDefun.addParameter(mainParameters.getChildren().get(0)); //todo: needs change
 		
-		List mainDefunList = new List();
-		mainDefunList.addChild(mainDefun);
-		res.add(mainDefunList);
+		res.add(mainDefun);
 		return res;
 	}
 	
@@ -115,7 +121,7 @@ public class Parser {
 	public static void main(String [] args){
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(Print 124)");
+		tokenizer.loadInput("(print 77) (print 33)");
 		p.compile(tokenizer);
 	}
 }

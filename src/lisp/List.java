@@ -28,6 +28,12 @@ public class List implements ILispForm{
 		children.add(form);
 	}
 	
+	public void addChildToForm(ILispForm form){
+		if(children.size() > 0 && children.get(0) instanceof Symbol)
+			((Symbol) children.get(0)).addParameter(form);
+		children.add(form);
+	}
+	
 	public int size(){
 		return children.size();
 	}

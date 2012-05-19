@@ -1,15 +1,9 @@
 package lisp;
 
 
-public class SpecialOperator extends Symbol{
+abstract public class SpecialOperator extends Symbol implements ILispForm{
 	
 	public SpecialOperator(String name){
 		super(name);
 	}
-
-	@Override
-	public void compile(SymbolTable symbolTable) throws SyntaxException {
-		
-	}
-
 }

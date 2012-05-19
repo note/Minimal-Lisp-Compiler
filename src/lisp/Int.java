@@ -8,6 +8,10 @@ public class Int implements ILispForm{
 	public Int(String value){
 		this.value = Integer.parseInt(value);
 	}
+	
+	public int getValue(){
+		return value;
+	}
 
 	@Override
 	public void compile(SymbolTable symbolTable) {
