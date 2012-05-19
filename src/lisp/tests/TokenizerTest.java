@@ -58,6 +58,7 @@ public class TokenizerTest {
 		assertEquals(Token.INT, tokenizer.nextToken().getCode());
 		assertEquals(Token.COMMENT, tokenizer.nextToken().getCode());
 		assertEquals(Token.INT, tokenizer.nextToken().getCode());
+		assertEquals(Token.EOF, tokenizer.nextToken().getCode());
 	}
 
 }

@@ -63,18 +63,18 @@ public class Tokenizer {
 	public Token nextToken(){
 		Token token;
 		
-		
-		
 		Iterator<CodeAndPattern> it = patterns.iterator();
 		while(it.hasNext()){
 			token = getToken(it.next());
 			if(token != null)
 				return token;
 		}
-		return null;
+		return new Token(Token.EOF, "");
 	}
 	
 	public static void main(String [] args){
-
+		System.out.println(lisp.RT.Runtime.getFunctionParametersLength("A"));
+		System.out.println(lisp.RT.Runtime.getFunctionParametersLength("B"));
+		System.out.println(lisp.RT.Runtime.getFunctionParametersLength("C"));
 	}
 }

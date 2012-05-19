@@ -82,14 +82,6 @@ public class ParserTest {
 		}
 		
 		try {
-			List<ILispForm> res = parser.parse(correctInput());
-			System.out.println("fdf");
-		} catch (SyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
 			parser.parse(openedInput());
 			fail("Should throw Syntax Exception");
 		} catch (SyntaxException e) {}

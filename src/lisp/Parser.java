@@ -1,13 +1,27 @@
 package lisp;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Parser {
-	private java.util.List<ILispForm> read(Tokenizer tokenizer, int openedParenthesis) throws SyntaxException{
+	private List createEmptyList(){
+		return new List();
+	}
+	
+	private Symbol createSymbol(String name, SymbolTable st){
+		Symbol res;
+		if(st.isSpecialOperator(name))
+			return st.getNewSpecialOperatorInstance(name);
+		return new Symbol(name);
+	}
+	
+	private java.util.List<ILispForm> read(Tokenizer tokenizer, SymbolTable st, int openedParenthesis) throws SyntaxException{
 		ArrayList<ILispForm> res = new ArrayList<ILispForm>();
+		ArrayList<ILispForm> params = new ArrayList<ILispForm>();
 		
 		Token token = tokenizer.nextToken();
 		ILispForm newForm;
+		Symbol currentFunction = null;
 		boolean firstToken = true;
 		while(token.getCode() != Token.EOF){
 			if(token.getCode() == Token.UNEXPECTED)
@@ -18,23 +32,29 @@ public class Parser {
 			
 			if(token.getCode() == Token.OPENING_PARENTHESIS){
 				newForm = new List();
-				((List) newForm).setChildren(read(tokenizer, openedParenthesis + 1));
+				((List) newForm).setChildren(read(tokenizer, st, openedParenthesis + 1));
 			}else if(token.getCode() == Token.CLOSING_PARENTHESIS){
 				if(openedParenthesis < 1)
 					throw new SyntaxException("Unmatched close parenthesis");
 				
+				if(currentFunction != null)
+					currentFunction.setParameters(params);
+				currentFunction = null;
 				return res;
 			}else{
 				 if(firstToken){
 					 if(token.getCode() != Token.SYMBOL)
 						 throw new SyntaxException("Symbol expected");
 					 
-					 newForm = new Function(token.getValue());
+					 currentFunction = createSymbol(token.getValue(), st);
+					 newForm = currentFunction;
+					 params.clear();
 				 }else{
 					 if(token.getCode() == Token.SYMBOL)
 						 newForm = new Variable(token.getValue());
 					 else
-						 newForm = new Int(token.getValue()); 
+						 newForm = new Int(token.getValue());
+					 params.add(newForm);
 				 }
 			}
 			
@@ -50,6 +70,52 @@ public class Parser {
 	}
 	
 	public java.util.List<ILispForm> parse(Tokenizer tokenizer) throws SyntaxException{
-		return read(tokenizer, 0);
+		return read(tokenizer, new SymbolTable(), 0);
+	}
+	
+	private java.util.List<ILispForm> addTopLevelToMain(java.util.List<ILispForm> tree){
+		java.util.List<ILispForm> res = new ArrayList<ILispForm>();
+		SymbolTable st = new SymbolTable();
+		
+		Symbol mainDefun = createSymbol("defun", st);
+		mainDefun.addParameter(createSymbol("Main", st));
+		mainDefun.addParameter(createEmptyList());
+		List mainParameters = new List();
+		
+		for(ILispForm it : tree){
+			if(it instanceof List && !((List) it).isDefun())
+				mainParameters.addChild(it);
+			else
+				res.add(it);
+		}
+		mainDefun.addParameter(mainParameters.getChildren().get(0)); //todo: needs change
+		
+		List mainDefunList = new List();
+		mainDefunList.addChild(mainDefun);
+		res.add(mainDefunList);
+		return res;
+	}
+	
+	public void compile(Tokenizer tokenizer){
+		try {
+			java.util.List<ILispForm> tree = parse(tokenizer);
+			tree = addTopLevelToMain(tree);
+			
+			SymbolTable st = new SymbolTable();
+			Iterator<ILispForm> it = tree.iterator();
+			while(it.hasNext())
+				it.next().compile(st);
+			
+		} catch (SyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String [] args){
+		Parser p = new Parser();
+		Tokenizer tokenizer = new Tokenizer();
+		tokenizer.loadInput("(Print 124)");
+		p.compile(tokenizer);
 	}
 }
