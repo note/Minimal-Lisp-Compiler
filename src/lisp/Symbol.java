@@ -2,6 +2,7 @@ package lisp;
 
 import java.util.ArrayList;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -40,27 +41,39 @@ public class Symbol implements ILispForm{
 
 	@Override
 	public void compile(SymbolTable symbolTable) throws SyntaxException {
-		/*ClassWriter cw = new ClassWriter(0);
-		
-		cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-				"Main", null, "java/lang/Object",
-				new String[] {});
-		
-		MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
-		
-		mv.visitCode();
-		mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-		resolveFunction(mv);
-		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V");
-        mv.visitInsn(Opcodes.RETURN);
-        mv.visitMaxs(2, 1);
-		cw.visitEnd();
-		
-		saveFile(cw);*/
 		MethodVisitor mv = Factory.getMethodVisitor();
 		
 		resolveFunction();
-		//todo: very simple aproach so far. the value returned by resolveFunction should be checked (if return value is -1 then function cannot be found)
+		
+		Label functionFound = new Label();
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitJumpInsn(Opcodes.IFGE, functionFound);
+		
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+		mv.visitTypeInsn(Opcodes.NEW, "lisp/LispRuntimeException");
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn("Function " + name + " not found");
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/LispRuntimeException", "<init>", "(Ljava/lang/String;)V");
+		mv.visitInsn(Opcodes.ATHROW);
+		mv.visitLabel(functionFound);
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+		
+		
+		mv.visitLabel(functionFound);
+		mv.visitLdcInsn(parameters.size());
+		Label end = new Label();
+		mv.visitJumpInsn(Opcodes.IF_ICMPEQ, end);
+		
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+		mv.visitTypeInsn(Opcodes.NEW, "lisp/LispRuntimeException");
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn("Invalid number of arguments: " + parameters.size());
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/LispRuntimeException", "<init>", "(Ljava/lang/String;)V");
+		mv.visitInsn(Opcodes.ATHROW);
+		
+		
+		mv.visitLabel(end);
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		
 		for(int i=0; i<parameters.size(); ++i)
 			if(parameters.get(i) instanceof Int)
@@ -68,6 +81,8 @@ public class Symbol implements ILispForm{
 			else
 				mv.visitLdcInsn(0);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, name, "invoke", getMethodDescriptor(parameters.size()));
+		
+		//todo: very simple aproach so far. the value returned by resolveFunction should be checked (if return value is -1 then function cannot be found)
 	}
 	
 	public static void main(String [] args){

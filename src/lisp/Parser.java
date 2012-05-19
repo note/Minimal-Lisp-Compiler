@@ -121,7 +121,7 @@ public class Parser {
 	public static void main(String [] args){
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(print 77) (print 33)");
+		tokenizer.loadInput("(print 77) (print 34)");
 		p.compile(tokenizer);
 	}
 }
