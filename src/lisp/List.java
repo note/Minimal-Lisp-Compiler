@@ -1,6 +1,7 @@
 package lisp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -34,6 +35,12 @@ public class List implements ILispForm{
 		children.add(form);
 	}
 	
+	public void clearForm(){
+		if(children.size() > 0 && children.get(0) instanceof Symbol)
+			((Symbol) children.get(0)).clearParameters();
+		children.clear();
+	}
+	
 	public int size(){
 		return children.size();
 	}
@@ -41,5 +48,10 @@ public class List implements ILispForm{
 	public boolean isDefun(){
 		return children.size() > 0 && children.get(0) instanceof SpecialOperator && ((SpecialOperator) children.get(0)).getName().equals("defun");
 	}
-
+	
+	public static List createForm(String name, SymbolTable st){
+		List res = new List();
+		res.addChild(Symbol.createSymbol(name, st));
+		return res;
+	}
 }

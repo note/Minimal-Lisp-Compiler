@@ -49,7 +49,7 @@ public class Defun extends SpecialOperator{
 	@Override
 	public void compile(SymbolTable symbolTable) throws SyntaxException {		
 		if(parameters.size() != 3)
-			throw new SyntaxException("Special operator let expects 3 arguments (got " + parameters.size() + " arguments");
+			throw new SyntaxException("Special operator defun expects 3 arguments (got " + parameters.size() + " arguments");
 		
 		if(!(parameters.get(0) instanceof Symbol))
 			throw new SyntaxException("First element of defun is expected to be a symbol");

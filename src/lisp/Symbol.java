@@ -76,7 +76,7 @@ public class Symbol implements ILispForm{
 		for(int i=0; i<parameters.size(); ++i)
 			if(parameters.get(i) instanceof Int)
 				mv.visitLdcInsn(((Int) parameters.get(i)).getValue());
-			else if(parameters.get(i) instanceof List)
+			else if(parameters.get(i) instanceof List || parameters.get(i) instanceof Variable)
 				parameters.get(i).compile(symbolTable);
 			else
 				mv.visitLdcInsn(0);
@@ -88,6 +88,17 @@ public class Symbol implements ILispForm{
 	public static void main(String [] args){
 		Symbol function = new Symbol("A");
 		//function.compile(new SymbolTable());
+	}
+	
+	public static Symbol createSymbol(String name, SymbolTable st){
+		Symbol res;
+		if(st.isSpecialOperator(name))
+			return st.getNewSpecialOperatorInstance(name);
+		return new Symbol(name);
+	}
+	
+	public void clearParameters(){
+		parameters.clear();
 	}
 
 }

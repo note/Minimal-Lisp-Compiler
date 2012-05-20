@@ -10,19 +10,6 @@ public class Parser {
 		return new List();
 	}
 	
-	private Symbol createSymbol(String name, SymbolTable st){
-		Symbol res;
-		if(st.isSpecialOperator(name))
-			return st.getNewSpecialOperatorInstance(name);
-		return new Symbol(name);
-	}
-	
-	private List createForm(String name, SymbolTable st){
-		List res = new List();
-		res.addChild(createSymbol(name, st));
-		return res;
-	}
-	
 	private java.util.List<ILispForm> read(Tokenizer tokenizer, SymbolTable st, int openedParenthesis) throws SyntaxException{
 		ArrayList<ILispForm> res = new ArrayList<ILispForm>();
 		ArrayList<ILispForm> params = new ArrayList<ILispForm>();
@@ -55,7 +42,7 @@ public class Parser {
 					 if(token.getCode() != Token.SYMBOL)
 						 throw new SyntaxException("Symbol expected");
 					 
-					 currentFunction = createSymbol(token.getValue(), st);
+					 currentFunction = Symbol.createSymbol(token.getValue(), st);
 					 newForm = currentFunction;
 					 params.clear();
 				 }else{
@@ -86,10 +73,10 @@ public class Parser {
 		java.util.List<ILispForm> res = new ArrayList<ILispForm>();
 		SymbolTable st = new SymbolTable();
 		
-		List mainDefun = createForm("defun", st);
-		mainDefun.addChildToForm(createSymbol("Main", st));
+		List mainDefun = List.createForm("defun", st);
+		mainDefun.addChildToForm(Symbol.createSymbol("Main", st));
 		mainDefun.addChildToForm(createEmptyList());
-		List progn = createForm("progn", st);
+		List progn = List.createForm("progn", st);
 		mainDefun.addChildToForm(progn);
 		
 		for(ILispForm it : tree){
@@ -123,7 +110,7 @@ public class Parser {
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
 		//tokenizer.loadInput("(print 77) (print 34)");
-		tokenizer.loadInput("(print (plus 3 12))");
+		tokenizer.loadInput("(let ((x 34)) (print (plus 10 x)))");
 		p.compile(tokenizer);
 	}
 }
