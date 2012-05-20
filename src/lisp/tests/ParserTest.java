@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import lisp.ILispForm;
+import lisp.LispForm;
 import lisp.Parser;
 import lisp.SyntaxException;
 import lisp.Token;
@@ -82,6 +82,14 @@ public class ParserTest {
 		}
 		
 		try {
+			List<LispForm> tree = parser.parse(correctInput());
+			System.out.println("cos");
+		} catch (SyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
 			parser.parse(openedInput());
 			fail("Should throw Syntax Exception");
 		} catch (SyntaxException e) {}
@@ -90,11 +98,5 @@ public class ParserTest {
 			parser.parse(unmatchedInput());
 			fail("Should throw Syntax Exception");
 		} catch (SyntaxException e) {}
-		
-		try {
-			parser.parse(notSymbolInput());
-			fail("Should throw Syntax Exception");
-		} catch (SyntaxException e) {}
-		
 	}
 }

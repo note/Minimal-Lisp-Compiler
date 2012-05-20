@@ -2,7 +2,7 @@ package lisp;
 
 
 
-public class Int implements ILispForm{
+public class Int extends LispForm{
 	int value;
 	
 	public Int(String value){

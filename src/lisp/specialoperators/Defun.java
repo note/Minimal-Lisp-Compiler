@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import lisp.Factory;
-import lisp.ILispForm;
+import lisp.LispForm;
 import lisp.List;
 import lisp.SpecialOperator;
 import lisp.Symbol;
@@ -28,9 +28,9 @@ public class Defun extends SpecialOperator{
 		cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", new String[] {});
 	}
 	
-	private void saveFile(ClassWriter cw){
+	private void saveFile(String functionName, ClassWriter cw){
 		try {
-			FileOutputStream out = new FileOutputStream("Main.class");
+			FileOutputStream out = new FileOutputStream(functionName + ".class");
 			out.write(cw.toByteArray());
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -42,12 +42,13 @@ public class Defun extends SpecialOperator{
 		}
 	}
 	
-	private String getFunctionName(){
-		return ((Symbol) parameters.get(0)).getName();
+	private String getFunctionName() throws SyntaxException{
+		return ((Symbol) getParameters().get(0)).getName();
 	}
 	
 	@Override
 	public void compile(SymbolTable symbolTable) throws SyntaxException {		
+		java.util.List<LispForm> parameters = getParameters(); 
 		if(parameters.size() != 3)
 			throw new SyntaxException("Special operator defun expects 3 arguments (got " + parameters.size() + " arguments");
 		
@@ -74,7 +75,7 @@ public class Defun extends SpecialOperator{
 		Factory.getMethodVisitor().visitMaxs(10, 10); //todo: solve this problem
 		Factory.getClassWriter().visitEnd();
 	
-		saveFile(Factory.getClassWriter());
+		saveFile(getFunctionName(), Factory.getClassWriter());
 	}
 
 }

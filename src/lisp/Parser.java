@@ -1,23 +1,15 @@
 package lisp;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 
 public class Parser {
-	private List createEmptyList(){
-		return new List();
-	}
-	
-	private java.util.List<ILispForm> read(Tokenizer tokenizer, SymbolTable st, int openedParenthesis) throws SyntaxException{
-		ArrayList<ILispForm> res = new ArrayList<ILispForm>();
-		ArrayList<ILispForm> params = new ArrayList<ILispForm>();
+	private java.util.List<LispForm> read(Tokenizer tokenizer, SymbolTable st, int openedParenthesis) throws SyntaxException{
+		ArrayList<LispForm> res = new ArrayList<LispForm>();
 		
 		Token token = tokenizer.nextToken();
-		ILispForm newForm;
-		Symbol currentFunction = null;
-		boolean firstToken = true;
+		LispForm newForm;
 		while(token.getCode() != Token.EOF){
 			if(token.getCode() == Token.UNEXPECTED)
 				throw new SyntaxException("Unexpected token");
@@ -26,36 +18,24 @@ public class Parser {
 				continue;
 			
 			if(token.getCode() == Token.OPENING_PARENTHESIS){
-				newForm = new List();
-				((List) newForm).setChildren(read(tokenizer, st, openedParenthesis + 1));
-				params.add(newForm);
+				List newList = new List();
+				java.util.List<LispForm> children = read(tokenizer, st, openedParenthesis + 1);
+				for(LispForm child : children)
+					newList.addChild(child);
+				
+				newForm = newList;
 			}else if(token.getCode() == Token.CLOSING_PARENTHESIS){
 				if(openedParenthesis < 1)
 					throw new SyntaxException("Unmatched close parenthesis");
 				
-				if(currentFunction != null)
-					currentFunction.setParameters(params);
-				currentFunction = null;
 				return res;
-			}else{
-				 if(firstToken){
-					 if(token.getCode() != Token.SYMBOL)
-						 throw new SyntaxException("Symbol expected");
-					 
-					 currentFunction = Symbol.createSymbol(token.getValue(), st);
-					 newForm = currentFunction;
-					 params.clear();
-				 }else{
-					 if(token.getCode() == Token.SYMBOL)
-						 newForm = new Variable(token.getValue());
-					 else
-						 newForm = new Int(token.getValue());
-					 params.add(newForm);
-				 }
-			}
+			}else if(token.getCode() == Token.INT){
+				newForm = new Int(token.getValue());
+			}else
+				newForm = new Symbol(token.getValue());
+			
 			
 			res.add(newForm);
-			firstToken = false;
 			token = tokenizer.nextToken();
 		}
 		
@@ -65,40 +45,35 @@ public class Parser {
 		return res;
 	}
 	
-	public java.util.List<ILispForm> parse(Tokenizer tokenizer) throws SyntaxException{
+	public java.util.List<LispForm> parse(Tokenizer tokenizer) throws SyntaxException{
 		return read(tokenizer, new SymbolTable(), 0);
 	}
 	
-	private java.util.List<ILispForm> addTopLevelToMain(java.util.List<ILispForm> tree){
-		java.util.List<ILispForm> res = new ArrayList<ILispForm>();
-		SymbolTable st = new SymbolTable();
+	private java.util.List<LispForm> addTopLevelToMain(java.util.List<LispForm> tree){
+		java.util.List<LispForm> res = new ArrayList<LispForm>();
 		
-		List mainDefun = List.createForm("defun", st);
-		mainDefun.addChildToForm(Symbol.createSymbol("Main", st));
-		mainDefun.addChildToForm(createEmptyList());
-		List progn = List.createForm("progn", st);
-		mainDefun.addChildToForm(progn);
+		List progn = List.createForm("progn");
+		List mainDefun = List.createDefun("Main", List.createEmptyList(), progn);
 		
-		for(ILispForm it : tree){
+		for(LispForm it : tree)
 			if(it instanceof List && !((List) it).isDefun())
-				progn.addChildToForm(it);
+				progn.addChild(it);
 			else
 				res.add(it);
-		}
 		
-		res.add(mainDefun);
+		if(progn.getParameters().size() > 0)
+			res.add(mainDefun);
 		return res;
 	}
 	
 	public void compile(Tokenizer tokenizer){
 		try {
-			java.util.List<ILispForm> tree = parse(tokenizer);
+			java.util.List<LispForm> tree = parse(tokenizer);
 			tree = addTopLevelToMain(tree);
 			
 			SymbolTable st = new SymbolTable();
-			Iterator<ILispForm> it = tree.iterator();
-			while(it.hasNext())
-				it.next().compile(st);
+			for(LispForm it : tree)
+				it.compile(st);
 			
 		} catch (SyntaxException e) {
 			// TODO Auto-generated catch block
@@ -111,6 +86,7 @@ public class Parser {
 		Tokenizer tokenizer = new Tokenizer();
 		//tokenizer.loadInput("(print 77) (print 34)");
 		tokenizer.loadInput("(let ((x 34)) (print (plus 10 x)))");
+		//tokenizer.loadInput("(defun f () (plus 10 55)) (print (f))");
 		p.compile(tokenizer);
 	}
 }

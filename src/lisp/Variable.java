@@ -4,11 +4,10 @@ import org.objectweb.asm.Opcodes;
 
 
 
-public class Variable implements ILispForm{
-	String name;
+public class Variable extends Symbol{
 	
 	public Variable(String name){
-		this.name = name;
+		super(name);
 	}
 
 	@Override
