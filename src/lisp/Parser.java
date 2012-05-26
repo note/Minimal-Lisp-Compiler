@@ -1,11 +1,12 @@
 package lisp;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 
 
 public class Parser {
-	private java.util.List<LispForm> read(Tokenizer tokenizer, SymbolTable st, int openedParenthesis) throws SyntaxException{
+	private java.util.List<LispForm> read(ITokenizer tokenizer, SymbolTable st, int openedParenthesis) throws SyntaxException, IOException{
 		ArrayList<LispForm> res = new ArrayList<LispForm>();
 		
 		Token token = tokenizer.nextToken();
@@ -45,7 +46,7 @@ public class Parser {
 		return res;
 	}
 	
-	public java.util.List<LispForm> parse(Tokenizer tokenizer) throws SyntaxException{
+	public java.util.List<LispForm> parse(ITokenizer tokenizer) throws SyntaxException, IOException{
 		return read(tokenizer, new SymbolTable(), 0);
 	}
 	
@@ -66,7 +67,7 @@ public class Parser {
 		return res;
 	}
 	
-	public void compile(Tokenizer tokenizer){
+	public void compile(ITokenizer tokenizer){
 		try {
 			java.util.List<LispForm> tree = parse(tokenizer);
 			tree = addTopLevelToMain(tree);
@@ -76,6 +77,9 @@ public class Parser {
 				it.compile(st);
 			
 		} catch (SyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

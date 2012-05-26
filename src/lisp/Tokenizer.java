@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Tokenizer {
+public class Tokenizer implements ITokenizer{
 	private static class CodeAndPattern{
 		int code;
 		Pattern pattern;
@@ -40,7 +40,7 @@ public class Tokenizer {
 		patterns.add(new CodeAndPattern(Token.UNEXPECTED, begin + "(.+)" + end));
 	}
 	
-	String input;
+	String input = null;
 	
 	public void loadInput(String text){
 		input = text;
@@ -52,10 +52,12 @@ public class Tokenizer {
 	
 	private Token getToken(CodeAndPattern cap){
 		Token token = null;
-		Matcher matcher = cap.pattern.matcher(input);
-		if(matcher.find()){
-			token = new Token(cap.code, input.substring(matcher.start(1), matcher.end(1)));
-			input = input.substring(matcher.end(1));
+		if(input != null){
+			Matcher matcher = cap.pattern.matcher(input);
+			if(matcher.find()){
+				token = new Token(cap.code, input.substring(matcher.start(1), matcher.end(1)));
+				input = input.substring(matcher.end(1));
+			}
 		}
 		return token;
 	}
@@ -70,11 +72,5 @@ public class Tokenizer {
 				return token;
 		}
 		return new Token(Token.EOF, "");
-	}
-	
-	public static void main(String [] args){
-		System.out.println(lisp.RT.Runtime.getFunctionParametersLength("A"));
-		System.out.println(lisp.RT.Runtime.getFunctionParametersLength("B"));
-		System.out.println(lisp.RT.Runtime.getFunctionParametersLength("C"));
 	}
 }

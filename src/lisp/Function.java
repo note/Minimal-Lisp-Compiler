@@ -1,7 +1,5 @@
 package lisp;
 
-import java.util.ArrayList;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -26,6 +24,18 @@ public class Function extends Symbol{
 		mv.visitInsn(Opcodes.ATHROW);
 	}
 	
+	private void generatePushParameters(SymbolTable st) throws SyntaxException{
+		MethodVisitor mv = Factory.getMethodVisitor();
+		java.util.List<LispForm> parameters = getParameters();
+		for(int i=0; i<parameters.size(); ++i)
+			if(parameters.get(i) instanceof Int)
+				mv.visitLdcInsn(((Int) parameters.get(i)).getValue());
+			else if(parameters.get(i) instanceof List || parameters.get(i) instanceof Variable)
+				parameters.get(i).compile(st);
+			else
+				mv.visitLdcInsn(0);
+	}
+	
 	@Override
 	public void compile(SymbolTable symbolTable) throws SyntaxException {
 		java.util.List<LispForm> parameters = getParameters();
@@ -48,15 +58,7 @@ public class Function extends Symbol{
 		generateRuntimeException("Invalid number of arguments: " + parameters.size());
 		
 		mv.visitLabel(end);
-		
-		for(int i=0; i<parameters.size(); ++i)
-			if(parameters.get(i) instanceof Int)
-				mv.visitLdcInsn(((Int) parameters.get(i)).getValue());
-			else if(parameters.get(i) instanceof List || parameters.get(i) instanceof Variable)
-				parameters.get(i).compile(symbolTable);
-			else
-				mv.visitLdcInsn(0);
-		
+		generatePushParameters(symbolTable);		
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, name, "invoke", getMethodDescriptor(parameters.size()));
 	}
 }
