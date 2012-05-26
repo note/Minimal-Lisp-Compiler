@@ -77,10 +77,10 @@ public class Parser {
 				it.compile(st);
 			
 		} catch (SyntaxException e) {
-			// TODO Auto-generated catch block
+			e.getMessage();
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.getMessage();
 			e.printStackTrace();
 		}
 	}
@@ -89,8 +89,10 @@ public class Parser {
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
 		//tokenizer.loadInput("(print 77) (print 34)");
-		tokenizer.loadInput("(let ((x 34)) (print (plus 10 x)))");
-		//tokenizer.loadInput("(defun f () (plus 10 55)) (print (f))");
+		//tokenizer.loadInput("(let ((x 34)) (print (plus 10 x)))");
+		tokenizer.loadInput("(defun f () (plus 10 55)) (print (f))");
+		tokenizer.loadInput("(defun f (x y) (plus x (plus y y))) (print (f 5 3))");
+		tokenizer.loadInput("(defun f (x y) (plus x (plus y y))) (let ((a 5) (b 3)) (print (f a b)))");
 		p.compile(tokenizer);
 	}
 }

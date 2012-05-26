@@ -6,4 +6,8 @@ public class SyntaxException extends Exception {
 	public SyntaxException(String msg){
 		message = msg;
 	}
+	
+	public String getMessage(){
+		return message;
+	}
 }

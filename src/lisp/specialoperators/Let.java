@@ -48,7 +48,7 @@ public class Let extends SpecialOperator{
 		return res;
 	}
 	
-	private java.util.List<LispForm> getConsolidated() throws SyntaxException{
+	private java.util.List<LispForm> wrapBodyWithProgn() throws SyntaxException{
 		java.util.List<LispForm> parameters = getParameters(); 
 		java.util.List<LispForm> res = new ArrayList<LispForm>();
 		res.add(parameters.get(0));
@@ -67,7 +67,7 @@ public class Let extends SpecialOperator{
 			throw new SyntaxException("Special operator let expects at least one argument (got " + parameters.size() + " arguments");
 		
 		if(!(parameters.get(0) instanceof List))
-			throw new SyntaxException("First element of lst is expected to be a list");
+			throw new SyntaxException("First element of let is expected to be a list");
 		
 		SymbolTable newSymbolTable = new SymbolTable(symbolTable, createAddrMap((List) parameters.get(0)));
 		
@@ -81,7 +81,7 @@ public class Let extends SpecialOperator{
 			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "push", "(II)V");
 	    }
 			
-		parameters = getConsolidated();
+		parameters = wrapBodyWithProgn();
 		parameters.get(2).compile(newSymbolTable);
 		
 		it = initMap.entrySet().iterator();

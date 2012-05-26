@@ -19,7 +19,7 @@ public class Function extends Symbol{
 		MethodVisitor mv = Factory.getMethodVisitor();
 		mv.visitTypeInsn(Opcodes.NEW, "lisp/LispRuntimeException");
 		mv.visitInsn(Opcodes.DUP);
-		mv.visitLdcInsn("Function " + message + " not found");
+		mv.visitLdcInsn(message);
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/LispRuntimeException", "<init>", "(Ljava/lang/String;)V");
 		mv.visitInsn(Opcodes.ATHROW);
 	}

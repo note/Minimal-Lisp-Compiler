@@ -3,6 +3,7 @@ package lisp.specialoperators;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import lisp.Factory;
 import lisp.LispForm;
@@ -46,6 +47,26 @@ public class Defun extends SpecialOperator{
 		return ((Symbol) getParameters().get(0)).getName();
 	}
 	
+	private HashMap<String, Integer> createAddrMap(List list) throws SyntaxException{
+		HashMap<String, Integer> res = new HashMap<String, Integer>();
+		
+		/*
+		 * A few assumptions here:
+		 * - all arguments must be one-word size.
+		 * - consecutive arguments are numbered with next negative indexes starting from zero (caller must follow this convention)
+		 */
+		int index = -1;
+		for(LispForm it : list.getChildren()){
+			if(!(it instanceof Symbol))
+				throw new SyntaxException("Elements of defun's arguments list are expected to be symbols.");
+			
+			res.put(((Symbol) it).getName(), index);
+			--index;
+		}
+		
+		return res;
+	}
+	
 	@Override
 	public void compile(SymbolTable symbolTable) throws SyntaxException {		
 		java.util.List<LispForm> parameters = getParameters(); 
@@ -58,6 +79,8 @@ public class Defun extends SpecialOperator{
 		if(!(parameters.get(1) instanceof List))
 			throw new SyntaxException("First element of defun is expected to be a list");
 		
+		SymbolTable newSymbolTable = new SymbolTable(symbolTable, createAddrMap((List) parameters.get(1)));
+		
 		createFunctionClass(getFunctionName());
 		
 		if(!getFunctionName().equals("Main"))
@@ -65,7 +88,7 @@ public class Defun extends SpecialOperator{
 		else
 			Factory.setMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null));
 		
-		parameters.get(2).compile(symbolTable);
+		parameters.get(2).compile(newSymbolTable);
 		
 		if(!getFunctionName().equals("Main"))
 			Factory.getMethodVisitor().visitInsn(Opcodes.IRETURN);
