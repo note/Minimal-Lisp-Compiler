@@ -59,6 +59,6 @@ public class Function extends Symbol{
 		
 		mv.visitLabel(end);
 		generatePushParameters(symbolTable);		
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, name, "invoke", getMethodDescriptor(parameters.size()));
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, lisp.RT.Runtime.getFunctionName(name), "invoke", getMethodDescriptor(parameters.size()));
 	}
 }

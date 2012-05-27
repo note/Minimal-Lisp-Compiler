@@ -66,6 +66,7 @@ class ClassPrinter extends ClassVisitor {
 
 public class Runtime {
 	private static HashMap<String, Integer> functions = new HashMap<String, Integer>();
+	private static HashMap<String, String> aliases = new HashMap<String, String>();
 	private static String currentFunctionName;
 	
 	private static String[] getClassNames(String dirname) {
@@ -98,14 +99,27 @@ public class Runtime {
 		functions.put(currentFunctionName, num);
 	}
 	
+	/**
+	 * 
+	 * @param name - name of function or alias
+	 * @return - name of function (if parameter name was alias it will return function name)
+	 * @example for "+" will return "_plus"
+	 */
+	public static String getFunctionName(String name){
+		if(aliases.containsKey(name))
+			return aliases.get(name);
+		return name;
+	}
+	
 	public static int getFunctionParametersLength(String name){
-		Integer res = functions.get(name);
+		Integer res = functions.get(getFunctionName(name));
 		if(res != null)
 			return res;
 		return -1;
 	}
 	
 	static{
+		aliases.put("+", "_plus");
 		init();
 	}
 }
