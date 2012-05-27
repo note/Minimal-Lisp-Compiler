@@ -7,6 +7,36 @@ import java.util.Iterator;
 
 public class List extends LispForm implements IValue{
 	private ArrayList<LispForm> children = new ArrayList<LispForm>();
+	private int firstElement = 0;
+	
+	public List(){
+		
+	}
+	
+	public List(List list, int firstElement){
+		this.children = list.children;
+		this.firstElement = firstElement;
+	}
+	
+	public LispForm getHead(){
+		if(firstElement < children.size())
+			return children.get(firstElement);
+		else
+			return List.createEmptyList();
+	}
+	
+	/**
+	 * Certainly this implementation of tails makes sense only if lists are immutable.
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public List getTail(){
+		if(firstElement < children.size() - 1)
+			return new List(this, firstElement + 1);
+		else
+			return List.createEmptyList();
+	}
 
 	/*
 	 * First element of list might be a special operator of function.

@@ -93,6 +93,7 @@ public class Parser {
 		//tokenizer.loadInput("(defun f () (+ 10 55)) (print (f))");
 		//tokenizer.loadInput("(defun f (x y) (+ x (+ y y))) (print (f 5 3))");
 		//tokenizer.loadInput("(defun f (x y) (+ x (+ y y))) (let ((a 5) (b 3)) (print (f a b)))");
+		tokenizer.loadInput("(print (car (cdr (list 3 4 5))))");
 		p.compile(tokenizer);
 	}
 }

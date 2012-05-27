@@ -2,8 +2,11 @@ package lisp;
 
 import java.util.HashMap;
 
+import lisp.specialoperators.Car;
+import lisp.specialoperators.Cdr;
 import lisp.specialoperators.Defun;
 import lisp.specialoperators.Let;
+import lisp.specialoperators.ListOperator;
 import lisp.specialoperators.Progn;
 
 class VariablesMap{
@@ -36,6 +39,9 @@ public class SymbolTable {
 		specialOperatorsMap.put("defun", Defun.class);
 		specialOperatorsMap.put("progn", Progn.class);
 		specialOperatorsMap.put("let", Let.class);
+		specialOperatorsMap.put("list", ListOperator.class);
+		specialOperatorsMap.put("car", Car.class);
+		specialOperatorsMap.put("cdr", Cdr.class);
 	}
 	
 	public boolean isSpecialOperator(String name){

@@ -2,6 +2,7 @@ package lisp;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 public class Factory {
 	private static ClassWriter classWriterInstance;

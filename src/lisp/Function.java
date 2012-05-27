@@ -15,15 +15,6 @@ public class Function extends Symbol{
 		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "getFunctionParametersLength", "(Ljava/lang/String;)I");
 	}
 	
-	private void generateRuntimeException(String message){
-		MethodVisitor mv = Factory.getMethodVisitor();
-		mv.visitTypeInsn(Opcodes.NEW, "lisp/LispRuntimeException");
-		mv.visitInsn(Opcodes.DUP);
-		mv.visitLdcInsn(message);
-		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/LispRuntimeException", "<init>", "(Ljava/lang/String;)V");
-		mv.visitInsn(Opcodes.ATHROW);
-	}
-	
 	private void generatePushParameters(SymbolTable st) throws SyntaxException{
 		java.util.List<LispForm> parameters = getParameters();
 		for(int i=0; i<parameters.size(); ++i)
@@ -44,7 +35,7 @@ public class Function extends Symbol{
 		mv.visitInsn(Opcodes.DUP);
 		mv.visitJumpInsn(Opcodes.IFGE, functionFound);
 		
-		generateRuntimeException("Function " + name + " not found");
+		Generator.generateRuntimeException("Function " + name + " not found");
 		
 		mv.visitLabel(functionFound);
 		
@@ -52,7 +43,7 @@ public class Function extends Symbol{
 		Label end = new Label();
 		mv.visitJumpInsn(Opcodes.IF_ICMPEQ, end);
 		
-		generateRuntimeException("Invalid number of arguments: " + parameters.size());
+		Generator.generateRuntimeException("Invalid number of arguments: " + parameters.size());
 		
 		mv.visitLabel(end);
 		generatePushParameters(symbolTable);		
