@@ -15,10 +15,10 @@ public class Variable extends Symbol{
 		int addr = symbolTable.getAddress(name);
 		
 		if(addr < 0) // if addr is negative it means it's argument of function we are currently in
-			Factory.getMethodVisitor().visitVarInsn(Opcodes.ILOAD, Math.abs(addr) - 1);
+			Factory.getMethodVisitor().visitVarInsn(Opcodes.ALOAD, Math.abs(addr) - 1);
 		else{
 			Factory.getMethodVisitor().visitLdcInsn(addr);
-			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "peek", "(I)I");
+			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "peek", "(I)Llisp/IValue;");
 		}
 	}
 

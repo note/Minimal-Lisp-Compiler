@@ -55,7 +55,8 @@ class ClassPrinter extends ClassVisitor {
 
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		if(name.equals("invoke"))
-			Runtime.addFunction(desc.length() - 3);
+			// if desc = "()IValue;" then desc.split(";").length == 1
+			Runtime.addFunction(desc.split(";").length - 1);
 		return null;
 	}
 

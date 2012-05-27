@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 
 
-public class List extends LispForm{
+public class List extends LispForm implements IValue{
 	private ArrayList<LispForm> children = new ArrayList<LispForm>();
 
 	/*

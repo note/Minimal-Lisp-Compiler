@@ -25,15 +25,12 @@ public class Function extends Symbol{
 	}
 	
 	private void generatePushParameters(SymbolTable st) throws SyntaxException{
-		MethodVisitor mv = Factory.getMethodVisitor();
 		java.util.List<LispForm> parameters = getParameters();
 		for(int i=0; i<parameters.size(); ++i)
-			if(parameters.get(i) instanceof Int)
-				mv.visitLdcInsn(((Int) parameters.get(i)).getValue());
-			else if(parameters.get(i) instanceof List || parameters.get(i) instanceof Variable)
+			if(parameters.get(i) instanceof Int || parameters.get(i) instanceof List || parameters.get(i) instanceof Variable)
 				parameters.get(i).compile(st);
 			else
-				mv.visitLdcInsn(0);
+				throw new SyntaxException("Cannot generate code for pushing function parameter");
 	}
 	
 	@Override
@@ -59,6 +56,6 @@ public class Function extends Symbol{
 		
 		mv.visitLabel(end);
 		generatePushParameters(symbolTable);		
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, lisp.RT.Runtime.getFunctionName(name), "invoke", getMethodDescriptor(parameters.size()));
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, lisp.RT.Runtime.getFunctionName(name), "invoke", generateMethodDescriptor(parameters.size()));
 	}
 }

@@ -84,16 +84,16 @@ public class Defun extends SpecialOperator{
 		createFunctionClass(getFunctionName());
 		
 		if(!getFunctionName().equals("Main"))
-			Factory.setMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invoke", getMethodDescriptor(((List) parameters.get(1)).size()), null, null));
+			Factory.setMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invoke", generateMethodDescriptor(((List) parameters.get(1)).size()), null, null));
 		else
 			Factory.setMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null));
 		
 		parameters.get(2).compile(newSymbolTable);
 		
-		if(!getFunctionName().equals("Main"))
-			Factory.getMethodVisitor().visitInsn(Opcodes.IRETURN);
-		else
+		if(getFunctionName().equals("Main"))
 			Factory.getMethodVisitor().visitInsn(Opcodes.RETURN);
+		else
+			Factory.getMethodVisitor().visitInsn(Opcodes.ARETURN);
 		
 		Factory.getMethodVisitor().visitMaxs(10, 10); //todo: solve this problem
 		Factory.getClassWriter().visitEnd();

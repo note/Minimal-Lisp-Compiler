@@ -12,11 +12,11 @@ public class Symbol extends LispForm{
 		return name;
 	}
 	
-	protected String getMethodDescriptor(int paramsNum){
+	protected String generateMethodDescriptor(int paramsNum){
 		String methodDesc = "(";
 		for(int i=0; i<paramsNum; ++i)
-			methodDesc += "I";
-		methodDesc += ")I";
+			methodDesc += "Llisp/IValue;";
+		methodDesc += ")Llisp/IValue;";
 		return methodDesc;
 	}
 

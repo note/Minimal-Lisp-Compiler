@@ -3,23 +3,25 @@ package lisp.RT;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import lisp.IValue;
+
 public class MemoryPool {
-	private static ArrayList<Stack<Integer>> variables = new ArrayList<Stack<Integer>>();
+	private static ArrayList<Stack<IValue>> variables = new ArrayList<Stack<IValue>>();
 	
 	static{
-		for(int i=0; i<100; ++i) //todo we know initial number of variables in compile-time 
-			variables.add(new Stack<Integer>()); 
+		for(int i=0; i<100; ++i) //todo initial number of variables is known in compile-time 
+			variables.add(new Stack<IValue>()); 
 	}
 	
-	public static void push(int addr, int value){
+	public static void push(int addr, IValue value){
 		variables.get(addr).push(value);
 	}
 	
-	public static int pop(int addr){
+	public static IValue pop(int addr){
 		return variables.get(addr).pop();
 	}
 	
-	public static int peek(int addr){
+	public static IValue peek(int addr){
 		return variables.get(addr).peek();
 	}
 }
