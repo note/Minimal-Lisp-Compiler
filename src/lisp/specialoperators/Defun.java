@@ -94,8 +94,9 @@ public class Defun extends SpecialOperator{
 			Factory.getMethodVisitor().visitInsn(Opcodes.RETURN);
 		else
 			Factory.getMethodVisitor().visitInsn(Opcodes.ARETURN);
+
 		
-		Factory.getMethodVisitor().visitMaxs(10, 10); //todo: solve this problem
+		Factory.getMethodVisitor().visitMaxs(0, 0); // stacks sizes are computed automatically thanks to ClassWriter.COMPUTE_FRAMES option. But it is still neccessary to call this method with any arguments (they will be ignored).
 		Factory.getClassWriter().visitEnd();
 	
 		saveFile(getFunctionName(), Factory.getClassWriter());

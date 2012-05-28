@@ -37,6 +37,10 @@ public class List extends LispForm implements IValue{
 		else
 			return List.createEmptyList();
 	}
+	
+	public void addAtFront(LispForm child){
+		children.add(0, child);
+	}
 
 	/*
 	 * First element of list might be a special operator of function.
