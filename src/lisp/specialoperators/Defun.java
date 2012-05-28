@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import lisp.Factory;
+import lisp.Generator;
 import lisp.LispForm;
 import lisp.List;
 import lisp.SpecialOperator;
@@ -14,6 +15,8 @@ import lisp.SymbolTable;
 import lisp.SyntaxException;
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class Defun extends SpecialOperator{
@@ -94,11 +97,10 @@ public class Defun extends SpecialOperator{
 			Factory.getMethodVisitor().visitInsn(Opcodes.RETURN);
 		else
 			Factory.getMethodVisitor().visitInsn(Opcodes.ARETURN);
-
 		
 		Factory.getMethodVisitor().visitMaxs(0, 0); // stacks sizes are computed automatically thanks to ClassWriter.COMPUTE_FRAMES option. But it is still neccessary to call this method with any arguments (they will be ignored).
 		Factory.getClassWriter().visitEnd();
-	
+		
 		saveFile(getFunctionName(), Factory.getClassWriter());
 	}
 
