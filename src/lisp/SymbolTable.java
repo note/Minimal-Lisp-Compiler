@@ -40,9 +40,12 @@ public class SymbolTable {
 	
 	private static final HashMap<String, Class<? extends SpecialOperator>> specialOperatorsMap = new HashMap<String, Class<? extends SpecialOperator>>();
 	private static final ArrayList<String> definedConstants = new ArrayList<String>();
+	private static HashMap<String, String> aliases = new HashMap<String, String>();
 	private VariablesMap variablesMap;
 	
 	static{
+		aliases.put("+", "_plus");
+		
 		definedConstants.add("NIL");
 		definedConstants.add("T");
 		
@@ -53,6 +56,18 @@ public class SymbolTable {
 		specialOperatorsMap.put("car", Car.class);
 		specialOperatorsMap.put("cdr", Cdr.class);
 		specialOperatorsMap.put("cons", Cons.class);
+	}
+	
+	/**
+	 * 
+	 * @param name - name of function or alias
+	 * @return - name of function (if parameter name was alias it will return function name)
+	 * @example for "+" will return "_plus"
+	 */
+	public static String getFunctionName(String name){
+		if(aliases.containsKey(name))
+			return aliases.get(name);
+		return name;
 	}
 	
 	public boolean isSpecialOperator(String name){

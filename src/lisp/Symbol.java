@@ -32,4 +32,8 @@ public class Symbol extends LispForm{
 		
 		return ((List) parent).getParameters();
 	}
+	
+	public String toString(){
+		return getName();
+	}
 }
