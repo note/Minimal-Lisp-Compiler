@@ -57,7 +57,7 @@ class ClassPrinter extends ClassVisitor {
 
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		if(name.equals("invoke"))
-			// if desc = "()IValue;" then desc.split(";").length == 1
+			// if desc = "()LispForm;" then desc.split(";").length == 1
 			Runtime.addFunction(desc.split(";").length - 1);
 		return null;
 	}

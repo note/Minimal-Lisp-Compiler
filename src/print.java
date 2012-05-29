@@ -1,14 +1,9 @@
-import lisp.IValue;
-import lisp.Int;
-import lisp.LispRuntimeException;
+import lisp.LispForm;
 import lisp.List;
 
 public class print {
-	public static IValue invoke(IValue num){
-		if(!(num instanceof Int))
-			throw new LispRuntimeException("Argument of function 'print' is expected to be an integer");
-		
-		System.out.println(((Int) num).getValue());
+	public static LispForm invoke(LispForm arg){
+		System.out.println(arg.toString());
 		return List.createEmptyList();
 	}
 }

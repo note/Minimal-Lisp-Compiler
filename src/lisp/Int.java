@@ -5,7 +5,7 @@ import org.objectweb.asm.Opcodes;
 
 
 
-public class Int extends LispForm implements IValue{
+public class Int extends LispForm{
 	int value;
 	
 	public Int(String value){
@@ -27,6 +27,10 @@ public class Int extends LispForm implements IValue{
 		mv.visitInsn(Opcodes.DUP);
 		mv.visitLdcInsn(value);
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/Int", "<init>", "(I)V");
+	}
+	
+	public String toString(){
+		return Integer.toString(value);
 	}
 	
 }

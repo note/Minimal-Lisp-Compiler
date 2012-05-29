@@ -94,8 +94,10 @@ public class Parser {
 		//tokenizer.loadInput("(defun f (x y) (+ x (+ y y))) (print (f 5 3))");
 		//tokenizer.loadInput("(defun f (x y) (+ x (+ y y))) (let ((a 5) (b 3)) (print (f a b)))");
 		//tokenizer.loadInput("(print (car (cdr (list 3 4 5))))");
-		tokenizer.loadInput("(print (car (cons 14 (list 3 4 5))))");
-		//tokenizer.loadInput("(cons 14 (list 3 4 5))");
+		//tokenizer.loadInput("(print (car (cons 14 (list 3 4 5))))");
+		//tokenizer.loadInput("(print (cons 14 (list 3 4 5)))");
+		tokenizer.loadInput("(print (let ((x 2)) (list 1 x 3)))");
+		//tokenizer.loadInput("(print (let ((x 12) (y 3)) (+ x y) (+ (+ x x) y)))");
 		p.compile(tokenizer);
 	}
 }

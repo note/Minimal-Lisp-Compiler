@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 
 
-public class List extends LispForm implements IValue{
+public class List extends LispForm{
 	private ArrayList<LispForm> children = new ArrayList<LispForm>();
 	private int firstElement = 0;
 	
@@ -115,5 +115,20 @@ public class List extends LispForm implements IValue{
 	
 	public static List createEmptyList(){
 		return new List();
+	}
+	
+	public String toString(){
+		if(children.size() == 0)
+			return "NIL";
+		else{
+			StringBuffer buff = new StringBuffer("(");
+			for(int i=0; i<children.size()-1; ++i){
+				buff.append(children.get(i).toString());
+				buff.append(" ");
+			}
+			buff.append(children.get(children.size()-1).toString());
+			buff.append(")");
+			return buff.toString();
+		}
 	}
 }

@@ -18,7 +18,7 @@ public class Variable extends Symbol{
 			Factory.getMethodVisitor().visitVarInsn(Opcodes.ALOAD, Math.abs(addr) - 1);
 		else{
 			Factory.getMethodVisitor().visitLdcInsn(addr);
-			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "peek", "(I)Llisp/IValue;");
+			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "peek", "(I)Llisp/LispForm;");
 		}
 	}
 

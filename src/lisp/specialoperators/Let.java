@@ -78,7 +78,7 @@ public class Let extends SpecialOperator{
 	        
 	        Factory.getMethodVisitor().visitLdcInsn(newSymbolTable.getAddress(pairs.getKey()));
 	        pairs.getValue().compile(symbolTable); //initialization list is compiled with the old symbol table
-			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "push", "(ILlisp/IValue;)V");
+			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "push", "(ILlisp/LispForm;)V");
 	    }
 			
 		parameters = wrapBodyWithProgn();
@@ -89,7 +89,7 @@ public class Let extends SpecialOperator{
 	        Map.Entry<String, Integer> pairs = (Map.Entry<String, Integer>)it.next();
 	        
 	        Factory.getMethodVisitor().visitLdcInsn(newSymbolTable.getAddress(pairs.getKey()));
-			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "pop", "(I)Llisp/IValue;");
+			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "remove", "(I)V");
 	    }
 	}
 }
