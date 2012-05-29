@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Currency;
 import java.util.HashMap;
 
+import lisp.LispRuntimeException;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
@@ -70,6 +72,11 @@ public class Runtime {
 	private static HashMap<String, String> aliases = new HashMap<String, String>();
 	private static String currentFunctionName;
 	
+	static{
+		aliases.put("+", "_plus");
+		init();
+	}
+	
 	private static String[] getClassNames(String dirname) {
 		File dir = new File(dirname);
 		FilenameFilter filter = new ClassFilter();
@@ -119,8 +126,7 @@ public class Runtime {
 		return -1;
 	}
 	
-	static{
-		aliases.put("+", "_plus");
-		init();
+	public static void throwRuntimeException(String message){
+		throw new LispRuntimeException(message);
 	}
 }
