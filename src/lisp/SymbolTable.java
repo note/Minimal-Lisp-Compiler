@@ -10,6 +10,7 @@ import lisp.specialoperators.Defun;
 import lisp.specialoperators.Let;
 import lisp.specialoperators.ListOperator;
 import lisp.specialoperators.Progn;
+import lisp.specialoperators.Setq;
 
 public class SymbolTable {
 	class VariablesMap{
@@ -58,6 +59,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("car", Car.class);
 		specialOperatorsMap.put("cdr", Cdr.class);
 		specialOperatorsMap.put("cons", Cons.class);
+		specialOperatorsMap.put("setq", Setq.class);
 	}
 	
 	/**

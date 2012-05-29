@@ -91,7 +91,9 @@ public class Parser {
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
 		//tokenizer.loadInput("(print 77) (print 34)");
-		tokenizer.loadInput("(print (+ 3 (* 4 5)))");
+		//tokenizer.loadInput("(print (+ 3 (* 4 5)))");
+		//tokenizer.loadInput("(print (let ((a 10)) (setq a 12)))");
+		tokenizer.loadInput("(print (let ((x 2) (y 6)) (progn (setq x 4 y 8) (+ x y))))");
 		p.compile(tokenizer);
 	}
 }

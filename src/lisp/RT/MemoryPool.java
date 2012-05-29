@@ -25,6 +25,20 @@ public class MemoryPool {
 		variables.get(addr).pop();
 	}
 	
+	/**
+	 * It might seem to be awkward that set function returns anything but it is for simplicity (setq will use that function and must return value of the last argument)
+	 */
+	public static LispForm setAndReturn(int addr, LispForm newValue){
+		variables.get(addr).pop();
+		variables.get(addr).push(newValue);
+		return newValue;
+	}
+	
+	public static void set(int addr, LispForm newValue){
+		variables.get(addr).pop();
+		variables.get(addr).push(newValue);
+	}
+	
 	public static LispForm peek(int addr){
 		return variables.get(addr).peek();
 	}
