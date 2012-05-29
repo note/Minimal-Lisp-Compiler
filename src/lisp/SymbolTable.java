@@ -45,6 +45,8 @@ public class SymbolTable {
 	
 	static{
 		aliases.put("+", "_plus");
+		aliases.put("-", "_minus");
+		aliases.put("*", "_mul");
 		
 		definedConstants.add("NIL");
 		definedConstants.add("T");
