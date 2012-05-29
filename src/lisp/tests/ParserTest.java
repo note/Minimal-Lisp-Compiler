@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.List;
 
 import lisp.LispForm;
@@ -79,6 +80,9 @@ public class ParserTest {
 			assertEquals(1, parser.parse(correctInput()).size());
 		} catch (SyntaxException e) {
 			fail("Unexpected Syntax Exception");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		try {
@@ -87,16 +91,25 @@ public class ParserTest {
 		} catch (SyntaxException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		try {
 			parser.parse(openedInput());
 			fail("Should throw Syntax Exception");
-		} catch (SyntaxException e) {}
+		} catch (SyntaxException e) {} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		try {
 			parser.parse(unmatchedInput());
 			fail("Should throw Syntax Exception");
-		} catch (SyntaxException e) {}
+		} catch (SyntaxException e) {} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

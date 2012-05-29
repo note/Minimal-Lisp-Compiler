@@ -15,9 +15,11 @@ public class Parser {
 			if(token.getCode() == Token.UNEXPECTED)
 				throw new SyntaxException("Unexpected token");
 			
-			if(token.getCode() == Token.COMMENT)
+			if(token.getCode() == Token.COMMENT){
+				token = tokenizer.nextToken();
 				continue;
-			
+			}
+				
 			if(token.getCode() == Token.OPENING_PARENTHESIS){
 				List newList = new List();
 				java.util.List<LispForm> children = read(tokenizer, st, openedParenthesis + 1);

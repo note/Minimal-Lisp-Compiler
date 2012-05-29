@@ -52,7 +52,7 @@ public class TokenizerTest {
 		
 		doTest(";comment\n 33", Token.COMMENT, "comment");
 		
-		tokenizer.loadInput("(let 4 ;comment\n 3");
+		tokenizer.loadInput("(let 4 ;comment 12 44\n 3");
 		assertEquals(Token.OPENING_PARENTHESIS, tokenizer.nextToken().getCode());
 		assertEquals(Token.SYMBOL, tokenizer.nextToken().getCode());
 		assertEquals(Token.INT, tokenizer.nextToken().getCode());
