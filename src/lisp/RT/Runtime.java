@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.util.Currency;
 import java.util.HashMap;
 
+import lisp.LispForm;
 import lisp.LispRuntimeException;
+import lisp.List;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -114,5 +116,9 @@ public class Runtime {
 	
 	public static void throwRuntimeException(String message){
 		throw new LispRuntimeException(message);
+	}
+	
+	public static boolean isNil(LispForm form){
+		return (form instanceof List) && ((List) form).isEmpty(); 
 	}
 }

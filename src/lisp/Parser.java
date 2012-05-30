@@ -93,7 +93,8 @@ public class Parser {
 		//tokenizer.loadInput("(print 77) (print 34)");
 		//tokenizer.loadInput("(print (+ 3 (* 4 5)))");
 		//tokenizer.loadInput("(print (let ((a 10)) (setq a 12)))");
-		tokenizer.loadInput("(print (let ((x 2) (y 6)) (progn (setq x 4 y 8) (+ x y))))");
+		//tokenizer.loadInput("(print (let ((x 2) (y 6)) (progn (setq x 4 y 8) (+ x y))))");
+		tokenizer.loadInput("(print (if (< 89 5) 10 13))");
 		p.compile(tokenizer);
 	}
 }

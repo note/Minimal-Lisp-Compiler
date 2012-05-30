@@ -7,6 +7,7 @@ import lisp.specialoperators.Car;
 import lisp.specialoperators.Cdr;
 import lisp.specialoperators.Cons;
 import lisp.specialoperators.Defun;
+import lisp.specialoperators.IfOperator;
 import lisp.specialoperators.Let;
 import lisp.specialoperators.ListOperator;
 import lisp.specialoperators.Progn;
@@ -48,6 +49,8 @@ public class SymbolTable {
 		aliases.put("+", "_plus");
 		aliases.put("-", "_minus");
 		aliases.put("*", "_mul");
+		aliases.put("<", "_lower");
+		aliases.put(">", "_greater");
 		
 		definedConstants.add("NIL");
 		definedConstants.add("T");
@@ -60,6 +63,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("cdr", Cdr.class);
 		specialOperatorsMap.put("cons", Cons.class);
 		specialOperatorsMap.put("setq", Setq.class);
+		specialOperatorsMap.put("if", IfOperator.class);
 	}
 	
 	/**

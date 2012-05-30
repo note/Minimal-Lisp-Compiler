@@ -131,4 +131,8 @@ public class List extends LispForm{
 			return buff.toString();
 		}
 	}
+	
+	public boolean isEmpty(){
+		return getChildren().size() == 0;
+	}
 }

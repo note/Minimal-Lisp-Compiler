@@ -36,13 +36,11 @@ public class Generator {
 	
 	public static void generateRuntimeException(String message){
 		MethodVisitor mv = Factory.getMethodVisitor();
-//		mv.visitTypeInsn(Opcodes.NEW, "lisp/LispRuntimeException");
-//		mv.visitInsn(Opcodes.DUP);
-//		mv.visitLdcInsn(message);
-//		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/LispRuntimeException", "<init>", "(Ljava/lang/String;)V");
-//		mv.visitInsn(Opcodes.ATHROW);
-		
 		mv.visitLdcInsn(message);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "throwRuntimeException", "(Ljava/lang/String;)V");
+	}
+	
+	public static void generateEmptyList(){
+		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/List", "createEmptyList", "()Llisp/List;");
 	}
 }
