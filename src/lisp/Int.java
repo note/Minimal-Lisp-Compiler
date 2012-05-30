@@ -32,5 +32,11 @@ public class Int extends LispForm{
 	public String toString(){
 		return Integer.toString(value);
 	}
+
+	@Override
+	public void generateYourself(SymbolTable symbolTable)
+			throws SyntaxException {
+		compile(symbolTable);
+	}
 	
 }

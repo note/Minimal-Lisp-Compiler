@@ -11,6 +11,7 @@ import lisp.specialoperators.IfOperator;
 import lisp.specialoperators.Let;
 import lisp.specialoperators.ListOperator;
 import lisp.specialoperators.Progn;
+import lisp.specialoperators.Quote;
 import lisp.specialoperators.Setq;
 
 public class SymbolTable {
@@ -64,6 +65,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("cons", Cons.class);
 		specialOperatorsMap.put("setq", Setq.class);
 		specialOperatorsMap.put("if", IfOperator.class);
+		specialOperatorsMap.put("quote", Quote.class);
 	}
 	
 	/**

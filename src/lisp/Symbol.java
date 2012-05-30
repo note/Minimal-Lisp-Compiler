@@ -1,5 +1,8 @@
 package lisp;
 
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
 
 public class Symbol extends LispForm{
 	public String name;
@@ -35,5 +38,15 @@ public class Symbol extends LispForm{
 	
 	public String toString(){
 		return getName();
+	}
+
+	@Override
+	public void generateYourself(SymbolTable symbolTable)
+			throws SyntaxException {
+		MethodVisitor mv = Factory.getMethodVisitor();
+		mv.visitTypeInsn(Opcodes.NEW, "lisp/Symbol");
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn(getName());
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/Symbol", "<init>", "(Ljava/lang/String;)V");
 	}
 }
