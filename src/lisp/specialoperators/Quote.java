@@ -1,8 +1,5 @@
 package lisp.specialoperators;
 
-import org.objectweb.asm.MethodVisitor;
-
-import lisp.Factory;
 import lisp.LispForm;
 import lisp.SpecialOperator;
 import lisp.SymbolTable;

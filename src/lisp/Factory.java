@@ -1,5 +1,6 @@
 package lisp;
 
+import java.util.Stack;
 import java.util.Vector;
 
 import org.objectweb.asm.ClassWriter;
@@ -7,37 +8,39 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class Factory {
-	private static ClassWriter classWriterInstance;
-	private static Vector<MethodVisitor> methodVisitors = new Vector<MethodVisitor>();
-	private static Vector<Boolean> isLambda = new Vector<Boolean>();
+	private static int nextLambdaIndex = 0;
+	private static Stack<ClassWriter> classWriters = new Stack<ClassWriter>();
+	private static Stack<MethodVisitor> methodVisitors = new Stack<MethodVisitor>();
 	
-	public static ClassWriter getClassWriter(){
-		return classWriterInstance;
+	public static int getNextLambdaIndex(){
+		return nextLambdaIndex;
 	}
 	
-	public static void setClassWriter(ClassWriter cw){
-		classWriterInstance = cw;
+	public static void increaseLambdaIndex(){
+		++nextLambdaIndex;
+	}
+	
+	public static ClassWriter getClassWriter(){
+		return classWriters.peek();
+	}
+	
+	public static void pushClassWriter(ClassWriter cw){
+		classWriters.push(cw);
+	}
+	
+	public static void popClassWriter(){
+		classWriters.pop();
 	}
 	
 	public static MethodVisitor getMethodVisitor(){
-		return methodVisitors.get(methodVisitors.size() - 1);
-	}
-	
-	public static MethodVisitor getNonLambdaMethodVisitor() throws SyntaxException{
-		for(int i=Factory.isLambda.size()-1; i>=0; --i)
-			if(!Factory.isLambda.get(i))
-				return Factory.methodVisitors.get(i);
-		
-		throw new SyntaxException("Missing top level function");
+		return methodVisitors.peek();
 	}
 	
 	public static void pushMethodVisitor(MethodVisitor mv, boolean isLambda){
-		Factory.isLambda.add(isLambda);
-		methodVisitors.add(mv);
+		methodVisitors.push(mv);
 	}
 	
 	public static void popMethodVisitor(){
-		Factory.isLambda.remove(Factory.isLambda.size() - 1);
-		methodVisitors.remove(methodVisitors.size() - 1);
+		methodVisitors.pop();
 	}
 }

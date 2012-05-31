@@ -8,6 +8,7 @@ import lisp.specialoperators.Cdr;
 import lisp.specialoperators.Cons;
 import lisp.specialoperators.Defun;
 import lisp.specialoperators.IfOperator;
+import lisp.specialoperators.Lambda;
 import lisp.specialoperators.Let;
 import lisp.specialoperators.ListOperator;
 import lisp.specialoperators.Progn;
@@ -66,6 +67,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("setq", Setq.class);
 		specialOperatorsMap.put("if", IfOperator.class);
 		specialOperatorsMap.put("quote", Quote.class);
+		specialOperatorsMap.put("lambda", Lambda.class);
 	}
 	
 	/**

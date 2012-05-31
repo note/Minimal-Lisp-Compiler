@@ -88,3 +88,17 @@ x
 (x)
 (quote (x))
 ;end
+
+;; LAMBDA
+
+(print ((lambda (x) (* x x)) 3))
+(print ((lambda (x y) (+ (* 2 x) y)) 4 (+ 4 7)))
+(print (let ((x 32)) ((lambda (y) (* x y)) 3)))
+(print (let ((x ((lambda (x) (* x x)) 12))) x))
+
+;begin
+9
+19
+96
+144
+;end

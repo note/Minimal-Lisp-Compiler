@@ -43,28 +43,43 @@ public class List extends LispForm {
 	public void addAtFront(LispForm child) {
 		children.add(0, child);
 	}
+	
+	private LispForm handleLambda(LispForm form, SymbolTable st) throws SyntaxException{
+		LispForm res = form.getLambda(st);
+		if(res != null)
+			form.compile(st);
+
+		return res;
+	}
+	
+	private Symbol handleSymbol(Symbol symbol, SymbolTable st){
+		if (st.isSpecialOperator(symbol.getName()))
+			return st.getNewSpecialOperatorInstance(symbol.getName());
+		else
+			return new Function(symbol.getName());
+	}
 
 	/*
 	 * First element of list might be a special operator of function.
 	 */
-	private LispForm resolveFirstElement(String name, SymbolTable st) {
-		LispForm res;
-		if (st.isSpecialOperator(name))
-			res = st.getNewSpecialOperatorInstance(name);
-		else
-			res = new Function(name);
+	private LispForm resolveFirstElement(LispForm form, SymbolTable st) throws SyntaxException {
+		// the special case: ((lambda (x) (body))) - the first element of list is not a symbol
+		LispForm res = handleLambda(form, st);
+		
+		if(res == null){
+			if(!(form instanceof Symbol))
+				throw new SyntaxException("First element of the list is expected to be a symbol.");
+			
+			res = handleSymbol((Symbol) form, st);
+		}
+		
 		res.setParent(this);
 		return res;
 	}
 
 	public void compile(SymbolTable st) throws SyntaxException {
-		if (children.size() > 0) {
-			if (!(children.get(0) instanceof Symbol))
-				throw new SyntaxException(
-						"First element of the list is expected to be a symbol.");
-			resolveFirstElement(((Symbol) children.get(0)).getName(), st)
-					.compile(st);
-		}
+		if (children.size() > 0)
+			resolveFirstElement(children.get(0), st).compile(st);
 		// else //todo
 	}
 
@@ -157,5 +172,13 @@ public class List extends LispForm {
 			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/List", "addChild",
 					"(Llisp/LispForm;)V");
 		}
+	}
+	
+	@Override
+	public Function getLambda(SymbolTable st) {
+		if(children.size() > 0)
+			if(children.get(0) instanceof Symbol)
+				return handleSymbol((Symbol) children.get(0), st).getLambda(st);
+		return null;
 	}
 }

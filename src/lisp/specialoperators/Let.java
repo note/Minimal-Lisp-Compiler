@@ -1,20 +1,18 @@
 package lisp.specialoperators;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.objectweb.asm.Opcodes;
-
 import lisp.Factory;
 import lisp.LispForm;
-import lisp.Int;
 import lisp.List;
 import lisp.SpecialOperator;
 import lisp.Symbol;
 import lisp.SymbolTable;
 import lisp.SyntaxException;
+
+import org.objectweb.asm.Opcodes;
 
 public class Let extends SpecialOperator{
 	private static int nextAddr = 0;
@@ -48,17 +46,8 @@ public class Let extends SpecialOperator{
 		return res;
 	}
 	
-	private java.util.List<LispForm> wrapBodyWithProgn() throws SyntaxException{
-		java.util.List<LispForm> parameters = getParameters(); 
-		java.util.List<LispForm> res = new ArrayList<LispForm>();
-		res.add(parameters.get(0));
-		res.add(parameters.get(1));
-		
-		List progn = List.createForm("progn");
-		for(int i=1; i<parameters.size(); ++i) //i=1, we omit the first parameter
-			progn.addChild(parameters.get(i));
-		res.add(progn);
-		return res;
+	protected java.util.List<LispForm> wrapBodyWithProgn() throws SyntaxException{
+		return wrapWithPrognStartingFromIndex(1);
 	}
 	
 	public void compile(SymbolTable symbolTable) throws SyntaxException{

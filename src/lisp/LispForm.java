@@ -18,4 +18,8 @@ public abstract class LispForm {
 	 * @throws SyntaxException
 	 */
 	public abstract void generateYourself(SymbolTable symbolTable) throws SyntaxException;
+	
+	public Function getLambda(SymbolTable symbolTable){
+		return null;
+	}
 }

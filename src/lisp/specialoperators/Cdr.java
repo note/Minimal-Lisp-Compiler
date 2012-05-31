@@ -1,14 +1,13 @@
 package lisp.specialoperators;
 
-import org.objectweb.asm.Opcodes;
-
 import lisp.Factory;
 import lisp.Generator;
 import lisp.LispForm;
-import lisp.List;
 import lisp.SpecialOperator;
 import lisp.SymbolTable;
 import lisp.SyntaxException;
+
+import org.objectweb.asm.Opcodes;
 
 public class Cdr extends SpecialOperator {
 
@@ -26,7 +25,7 @@ public class Cdr extends SpecialOperator {
 		Generator.generateCastToList();
 		
 		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/List", "getTail", "()Llisp/List;");
-		
+
 	}
 
 }
