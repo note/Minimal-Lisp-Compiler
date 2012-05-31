@@ -12,7 +12,7 @@ public class Variable extends Symbol{
 
 	@Override
 	public void compile(SymbolTable symbolTable) throws SyntaxException {
-		int addr = symbolTable.getAddress(name);
+		int addr = symbolTable.getVariableAddress(name);
 		
 		if(addr < 0) // if addr is negative it means it's argument of function we are currently in
 			Factory.getMethodVisitor().visitVarInsn(Opcodes.ALOAD, Math.abs(addr) - 1);

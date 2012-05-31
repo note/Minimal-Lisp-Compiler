@@ -96,7 +96,8 @@ public class Parser {
 		//tokenizer.loadInput("(print (let ((x 2) (y 6)) (progn (setq x 4 y 8) (+ x y))))");
 		//tokenizer.loadInput("(print (if (< 89 5) 10 13))");
 		//tokenizer.loadInput("(print (quote (quote (x))))");
-		tokenizer.loadInput("(print (let ((x ((lambda (x) (* x x)) 12))) x))");
+		//tokenizer.loadInput("(print (let ((ff (lambda (x) (* 2 x)))) (funcall ff 5)))");
+		tokenizer.loadInput("(print (let ((ff (lambda (x) (* 2 x)))) (funcall ff 5)))");
 		p.compile(tokenizer);
 	}
 }

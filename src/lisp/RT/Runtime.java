@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Currency;
 import java.util.HashMap;
 
@@ -120,5 +122,36 @@ public class Runtime {
 	
 	public static boolean isNil(LispForm form){
 		return (form instanceof List) && ((List) form).isEmpty(); 
+	}
+	
+	public static LispForm funcall(String functionName, Object [] args){
+		Class clazz;
+		try {
+			clazz = Class.forName(functionName);
+			Class [] types = new Class[args.length];
+			for(int i=0; i<args.length; ++i)
+				types [i]= LispForm.class;
+			Method m = clazz.getDeclaredMethod("invoke", types);
+			return (LispForm) m.invoke(null, args);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

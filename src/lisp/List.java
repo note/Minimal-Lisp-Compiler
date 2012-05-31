@@ -46,9 +46,11 @@ public class List extends LispForm {
 	
 	private LispForm handleLambda(LispForm form, SymbolTable st) throws SyntaxException{
 		LispForm res = form.getLambda(st);
-		if(res != null)
+		if(res != null){
 			form.compile(st);
-
+			Factory.getMethodVisitor().visitInsn(Opcodes.POP); // in this case: ((lambda (x) (+ x x))) we do not need function object on stack
+		}
+		
 		return res;
 	}
 	

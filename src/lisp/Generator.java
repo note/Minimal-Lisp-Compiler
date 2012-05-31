@@ -11,22 +11,27 @@ import org.objectweb.asm.Opcodes;
 
 public class Generator {
 	
-	/**
-	 * Stack: -> ref to nth param (if it is list)
-	 */
-	public static void generateCheckIfList(java.util.List<LispForm> parameters, SymbolTable symbolTable, int nth, String message) throws SyntaxException{
+	private static void generateCheckIfInstanceOf(LispForm form, SymbolTable symbolTable, String type, String message) throws SyntaxException{
 		MethodVisitor mv = Factory.getMethodVisitor();
 		
-		parameters.get(nth).compile(symbolTable);
+		form.compile(symbolTable);
 		mv.visitInsn(Opcodes.DUP);
 		
 		Label isList = new Label();
-		mv.visitTypeInsn(Opcodes.INSTANCEOF, "lisp/List");
+		mv.visitTypeInsn(Opcodes.INSTANCEOF, type);
 		mv.visitJumpInsn(Opcodes.IFNE, isList);
 		
 		Generator.generateRuntimeException(message);
 		
 		mv.visitLabel(isList);
+	}
+	
+	public static void generateCheckIfList(LispForm form, SymbolTable symbolTable, String message) throws SyntaxException{
+		generateCheckIfInstanceOf(form, symbolTable, "lisp/List", message);
+	}
+	
+	public static void generateCheckIfSymbol(LispForm form, SymbolTable symbolTable, String message) throws SyntaxException{
+		generateCheckIfInstanceOf(form, symbolTable, "lisp/Symbol", message);
 	}
 	
 	/**
@@ -37,6 +42,12 @@ public class Generator {
 		MethodVisitor mv = Factory.getMethodVisitor();
 		
 		mv.visitTypeInsn(Opcodes.CHECKCAST, "lisp/List");
+	}
+	
+	public static void generateCastToSymbol(){
+		MethodVisitor mv = Factory.getMethodVisitor();
+		
+		mv.visitTypeInsn(Opcodes.CHECKCAST, "lisp/Symbol");
 	}
 	
 	public static void generateRuntimeException(String message){

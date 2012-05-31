@@ -95,10 +95,20 @@ x
 (print ((lambda (x y) (+ (* 2 x) y)) 4 (+ 4 7)))
 (print (let ((x 32)) ((lambda (y) (* x y)) 3)))
 (print (let ((x ((lambda (x) (* x x)) 12))) x))
+(print (let ((ff (lambda (x) (* 2 x)))) (funcall ff 5)))
 
 ;begin
 9
 19
 96
 144
+10
+;end
+
+;; FUNCALL
+
+(print (let ((fn (lambda (x) (* x x)))) (funcall fn 4)))
+
+;begin
+16
 ;end

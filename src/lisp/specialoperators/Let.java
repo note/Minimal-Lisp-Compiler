@@ -65,7 +65,7 @@ public class Let extends SpecialOperator{
 	    while (it.hasNext()) {
 	        Map.Entry<String, LispForm> pairs = (Map.Entry<String, LispForm>)it.next();
 	        
-	        Factory.getMethodVisitor().visitLdcInsn(newSymbolTable.getAddress(pairs.getKey()));
+	        Factory.getMethodVisitor().visitLdcInsn(newSymbolTable.getVariableAddress(pairs.getKey()));
 	        pairs.getValue().compile(symbolTable); //initialization list is compiled with the old symbol table
 			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "push", "(ILlisp/LispForm;)V");
 	    }
@@ -77,7 +77,7 @@ public class Let extends SpecialOperator{
 		while (it.hasNext()) {
 	        Map.Entry<String, Integer> pairs = (Map.Entry<String, Integer>)it.next();
 	        
-	        Factory.getMethodVisitor().visitLdcInsn(newSymbolTable.getAddress(pairs.getKey()));
+	        Factory.getMethodVisitor().visitLdcInsn(newSymbolTable.getVariableAddress(pairs.getKey()));
 			Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/MemoryPool", "remove", "(I)V");
 	    }
 	}

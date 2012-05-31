@@ -28,7 +28,7 @@ public class Setq extends SpecialOperator {
 			if(!(parameters.get(i) instanceof Symbol))
 				throw new SyntaxException("Special operator setq expects a symbol as the first argument");
 		
-			int addr = symbolTable.getAddress(((Symbol) parameters.get(i)).getName());
+			int addr = symbolTable.getVariableAddress(((Symbol) parameters.get(i)).getName());
 		
 			mv.visitLdcInsn(addr);
 			parameters.get(i + 1).compile(symbolTable);

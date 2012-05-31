@@ -7,6 +7,7 @@ import lisp.specialoperators.Car;
 import lisp.specialoperators.Cdr;
 import lisp.specialoperators.Cons;
 import lisp.specialoperators.Defun;
+import lisp.specialoperators.Funcall;
 import lisp.specialoperators.IfOperator;
 import lisp.specialoperators.Lambda;
 import lisp.specialoperators.Let;
@@ -68,6 +69,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("if", IfOperator.class);
 		specialOperatorsMap.put("quote", Quote.class);
 		specialOperatorsMap.put("lambda", Lambda.class);
+		specialOperatorsMap.put("funcall", Funcall.class);
 	}
 	
 	/**
@@ -107,7 +109,7 @@ public class SymbolTable {
 		variablesMap = new VariablesMap(previous.variablesMap, initMap);
 	}
 	
-	public int getAddress(String name) throws SyntaxException{
+	public int getVariableAddress(String name) throws SyntaxException{
 		return variablesMap.getAddress(name);
 	}
 }
