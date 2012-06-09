@@ -72,16 +72,16 @@ public class Compiler {
 	
 	public static void main(String [] args){	
 		Compiler compiler = new Compiler();
-//		compiler.run(args);
+		compiler.run(args);
 		
-		try {
-			compiler.test();
-		} catch (SyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			compiler.test();
+//		} catch (SyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }

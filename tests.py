@@ -37,7 +37,7 @@ for filename in os.listdir(path):
 		
 		# compiling
 		print "Compiling file " + getName(filename) + ".lisp:"
-		if(subprocess.call(["java", "-cp", "asm-4.0.jar:bin", "lisp.Compiler", os.path.join("lisp", "tmp", getName(filename) + ".lisp")]) != 0):
+		if(subprocess.call(["java", "-cp", "asm-4.0.jar:bin:.", "lisp.Compiler", os.path.join("lisp", "tmp", getName(filename) + ".lisp")]) != 0):
 			print "FAIL"
 			continue
 		print "OK"
