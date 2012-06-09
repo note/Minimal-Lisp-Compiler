@@ -23,13 +23,15 @@ public class Defun extends SpecialOperator{
 		super("defun");
 	}
 	
-	private String getFunctionName() throws SyntaxException{
+	public Defun(String name){
+		super(name);
+	}
+	
+	protected String getFunctionName() throws SyntaxException{
 		return ((Symbol) getParameters().get(0)).getName();
 	}
 	
-	@Override
-	public void compile(SymbolTable symbolTable) throws SyntaxException {		
-		java.util.List<LispForm> parameters = getParameters(); 
+	protected void checkArguments(java.util.List<LispForm> parameters) throws SyntaxException{ 
 		if(parameters.size() != 3)
 			throw new SyntaxException("Special operator defun expects 3 arguments (got " + parameters.size() + " arguments");
 		
@@ -38,6 +40,12 @@ public class Defun extends SpecialOperator{
 		
 		if(!(parameters.get(1) instanceof List))
 			throw new SyntaxException("First element of defun is expected to be a list");
+	}
+	
+	@Override
+	public void compile(SymbolTable symbolTable) throws SyntaxException {		
+		java.util.List<LispForm> parameters = getParameters(); 
+		checkArguments(parameters);
 		
 		SymbolTable newSymbolTable = new SymbolTable(symbolTable, createAddrMap((List) parameters.get(1), "defun"));
 		

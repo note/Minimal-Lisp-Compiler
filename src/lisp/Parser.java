@@ -52,41 +52,6 @@ public class Parser {
 		return read(tokenizer, new SymbolTable(), 0);
 	}
 	
-	private java.util.List<LispForm> addTopLevelToMain(java.util.List<LispForm> tree){
-		java.util.List<LispForm> res = new ArrayList<LispForm>();
-		
-		List progn = List.createForm("progn");
-		List mainDefun = List.createDefun("Main", List.createEmptyList(), progn);
-		
-		for(LispForm it : tree)
-			if(it instanceof List && !((List) it).isDefun())
-				progn.addChild(it);
-			else
-				res.add(it);
-		
-		if(progn.getParameters().size() > 0)
-			res.add(mainDefun);
-		return res;
-	}
-	
-	public void compile(ITokenizer tokenizer){
-		try {
-			java.util.List<LispForm> tree = parse(tokenizer);
-			tree = addTopLevelToMain(tree);
-			
-			SymbolTable st = new SymbolTable();
-			for(LispForm it : tree)
-				it.compile(st);
-			
-		} catch (SyntaxException e) {
-			e.getMessage();
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.getMessage();
-			e.printStackTrace();
-		}
-	}
-	
 	public static void main(String [] args){
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
@@ -98,6 +63,5 @@ public class Parser {
 		//tokenizer.loadInput("(print (quote (quote (x))))");
 		//tokenizer.loadInput("(print (let ((ff (lambda (x) (* 2 x)))) (funcall ff 5)))");
 		tokenizer.loadInput("(print (let ((ff (lambda (x) (* 2 x)))) (funcall ff 5)))");
-		p.compile(tokenizer);
 	}
 }
