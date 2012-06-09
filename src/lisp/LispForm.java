@@ -11,6 +11,10 @@ public abstract class LispForm {
 	
 	public abstract void compile(SymbolTable symbolTable) throws SyntaxException;
 	
+	public LispForm expandMacros(SymbolTable symbolTable) throws SyntaxException{
+		return this;
+	}
+	
 	/**
 	 * Generates bytecode that translates compile time structure to runtime structure.
 	 *  

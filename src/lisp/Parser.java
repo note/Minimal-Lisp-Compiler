@@ -13,7 +13,7 @@ public class Parser {
 		LispForm newForm;
 		while(token.getCode() != Token.EOF){
 			if(token.getCode() == Token.UNEXPECTED)
-				throw new SyntaxException("Unexpected token");
+				throw new SyntaxException("Unexpected token '" + token.getValue() + "'");
 			
 			if(token.getCode() == Token.COMMENT){
 				token = tokenizer.nextToken();

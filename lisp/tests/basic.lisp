@@ -112,3 +112,17 @@ x
 ;begin
 16
 ;end
+
+
+(defun __reverse (l res) (if (car l) (__reverse (cdr l) (cons (car l) res)) res))
+(defun reverse (l) (__reverse l (list)))
+
+(defmacro backwards (x) (reverse x))
+
+(print (reverse (list 4 5 6)))
+(backwards (56 print))
+
+;begin
+(6 5 4)
+56
+;end

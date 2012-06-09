@@ -63,6 +63,8 @@ class ClassPrinter extends ClassVisitor {
 		if(name.equals("invoke"))
 			// if desc = "()LispForm;" then desc.split(";").length == 1
 			Runtime.addFunction(desc.split(";").length - 1);
+		if(name.equals("invokeMacro"))
+			Runtime.addMacro(desc.split(";").length - 1);
 		return null;
 	}
 
@@ -73,6 +75,7 @@ class ClassPrinter extends ClassVisitor {
 
 public class Runtime {
 	private static HashMap<String, Integer> functions = new HashMap<String, Integer>();
+	private static HashMap<String, Integer> macros = new HashMap<String, Integer>();
 	private static String currentFunctionName;
 	
 	static{
@@ -109,11 +112,26 @@ public class Runtime {
 		functions.put(currentFunctionName, num);
 	}
 	
+	public static void addMacro(int num){
+		macros.put(currentFunctionName, num);
+	}
+	
 	public static int getFunctionParametersLength(String name){
 		Integer res = functions.get(name);
 		if(res != null)
 			return res;
 		return -1;
+	}
+	
+	public static int getMacroParametersLength(String name){
+		Integer res = macros.get(name);
+		if(res != null)
+			return res;
+		return -1;
+	}
+	
+	public static boolean isMacro(String name){
+		return macros.containsKey(name);
 	}
 	
 	public static void throwRuntimeException(String message){

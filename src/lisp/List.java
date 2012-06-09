@@ -3,6 +3,8 @@ package lisp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import lisp.RT.Runtime;
+
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -68,7 +70,7 @@ public class List extends LispForm {
 		// the special case: ((lambda (x) (body))) - the first element of list is not a symbol
 		LispForm res = handleLambda(form, st);
 		
-		if(res == null){
+		if(res == null){ // if not lambda
 			if(!(form instanceof Symbol))
 				throw new SyntaxException("First element of the list is expected to be a symbol.");
 			
@@ -83,6 +85,33 @@ public class List extends LispForm {
 		if (children.size() > 0)
 			resolveFirstElement(children.get(0), st).compile(st);
 		// else //todo
+	}
+	
+	public LispForm expandMacros(SymbolTable st) throws SyntaxException{
+		if(children.size() > 0){
+			if(children.get(0) instanceof Symbol){
+				Symbol macro = (Symbol) children.get(0);
+				if(macro.getName().equals("quote"))
+					return this;
+				
+				java.util.List<LispForm> expandedChildren = new java.util.ArrayList<LispForm>();
+				for(LispForm child : children)
+					expandedChildren.add(child.expandMacros(st));
+				
+				if(Runtime.isMacro(macro.getName())){
+					List list = new List();
+					list.setChildren(expandedChildren);
+					Macro m = new Macro(macro.getName());
+					m.setParent(list);
+					return m.expandMacros(st);
+				}else{
+					List res = new List();
+					res.setChildren(expandedChildren);
+					return res;
+				}
+			}
+		}
+		return this;
 	}
 
 	public void setChildren(java.util.List<LispForm> children) {
@@ -120,6 +149,10 @@ public class List extends LispForm {
 	public boolean isDefun() {
 		return children.size() > 0 && children.get(0) instanceof Symbol
 				&& ((Symbol) children.get(0)).getName().equals("defun");
+	}
+	
+	public boolean isMacro() {
+		return children.size() > 0 && children.get(0) instanceof Symbol && ((Symbol) children.get(0)).getName().equals("defmacro");
 	}
 
 	public static List createForm(String name) {

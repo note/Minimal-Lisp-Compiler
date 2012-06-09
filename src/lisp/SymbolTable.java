@@ -6,6 +6,7 @@ import java.util.HashMap;
 import lisp.specialoperators.Car;
 import lisp.specialoperators.Cdr;
 import lisp.specialoperators.Cons;
+import lisp.specialoperators.Defmacro;
 import lisp.specialoperators.Defun;
 import lisp.specialoperators.Funcall;
 import lisp.specialoperators.IfOperator;
@@ -70,6 +71,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("quote", Quote.class);
 		specialOperatorsMap.put("lambda", Lambda.class);
 		specialOperatorsMap.put("funcall", Funcall.class);
+		specialOperatorsMap.put("defmacro", Defmacro.class);
 	}
 	
 	/**

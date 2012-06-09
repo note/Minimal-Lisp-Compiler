@@ -20,7 +20,7 @@ public class Compiler {
 		List mainDefun = List.createDefun("Main", List.createEmptyList(), progn);
 		
 		for(LispForm it : tree)
-			if(it instanceof List && !((List) it).isDefun())
+			if(it instanceof List && !((List) it).isDefun() && ! ((List) it).isMacro())
 				progn.addChild(it);
 			else
 				res.add(it);
@@ -34,8 +34,10 @@ public class Compiler {
 		tree = addTopLevelToMain(tree);
 		
 		SymbolTable st = new SymbolTable();
-		for(LispForm it : tree)
-			it.compile(st);
+		for(LispForm it : tree){
+			LispForm form = it.expandMacros(st);
+			form.compile(st);
+		}
 	}
 	
 	private void run(String [] args){
@@ -58,8 +60,28 @@ public class Compiler {
 		}
 	}
 	
+	private void test() throws SyntaxException, IOException{
+		Parser p = new Parser();
+		Tokenizer tokenizer = new Tokenizer();
+		tokenizer.loadInput("(defun __reverse (l res) (if (car l) (__reverse (cdr l) (cons (car l) res)) res)) (defun reverse (l) (__reverse l (list)))" +
+				"(defmacro backwards (x) (reverse x))" +
+				"(backwards (56 print))");
+		java.util.List<LispForm> tree = p.parse(tokenizer);
+		compile(tree);
+	}
+	
 	public static void main(String [] args){	
 		Compiler compiler = new Compiler();
-		compiler.run(args);
+//		compiler.run(args);
+		
+		try {
+			compiler.test();
+		} catch (SyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
