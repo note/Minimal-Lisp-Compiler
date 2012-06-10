@@ -63,9 +63,7 @@ public class Compiler {
 	private void test() throws SyntaxException, IOException{
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(defun __reverse (l res) (if (car l) (__reverse (cdr l) (cons (car l) res)) res)) (defun reverse (l) (__reverse l (list)))" +
-				"(defmacro backwards (x) (reverse x))" +
-				"(backwards (56 print))");
+		tokenizer.loadInput("(print `(+ 4 ,(* 2 5)))");
 		java.util.List<LispForm> tree = p.parse(tokenizer);
 		compile(tree);
 	}

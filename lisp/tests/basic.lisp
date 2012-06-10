@@ -113,6 +113,7 @@ x
 16
 ;end
 
+;; DEFMACRO
 
 (defun __reverse (l res) (if (car l) (__reverse (cdr l) (cons (car l) res)) res))
 (defun reverse (l) (__reverse l (list)))
@@ -125,4 +126,45 @@ x
 ;begin
 (6 5 4)
 56
+;end
+
+;; ' instead of quote
+
+(print 'ret)
+(print '(+ x 5))
+(print (let ((x 12)) 'x))
+(print '(x))
+(print '(quote (x)))
+
+;begin
+ret
+(+ x 5)
+x
+(x)
+(quote (x))
+;end
+
+;; BACKQUOTE
+
+(defun g () (list 5 6 7))
+(print `(+ x 5))
+(print (let ((x 12)) `x))
+(print `x)
+(print `(+ 4 ,(* 2 5)))
+(print `(+ (* 3 3) ,(* 2 5)))
+(print `(* (+ 4 ,(+ 3 7)) 11))
+(print `(3 4 ,(list 7 8)))
+;(print `(3 4 ,@(list 7 8)))
+(print `(,(g) 100))
+;(print `(,@(f) 100))
+
+;begin
+(+ x 5)
+x
+x
+(+ 4 10)
+(+ (* 3 3) 10)
+(* (+ 4 10) 11)
+(3 4 (7 8))
+((5 6 7) 100)
 ;end

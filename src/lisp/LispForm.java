@@ -3,13 +3,27 @@ package lisp;
 
 
 public abstract class LispForm {
-	LispForm parent = null;
+	protected LispForm parent = null;
 	
-	void setParent(LispForm parent){
+	public void setParent(LispForm parent){
 		this.parent = parent;
 	}
 	
+	public LispForm getParent(){
+		return parent;
+	}
+	
 	public abstract void compile(SymbolTable symbolTable) throws SyntaxException;
+	
+	/**
+	 * Only List and Comma needs more interesting implementation
+	 * 
+	 * @param symbolTable
+	 * @throws SyntaxException
+	 */
+	public void compileIfComma(SymbolTable symbolTable) throws SyntaxException{
+		this.generateYourself(symbolTable);
+	}
 	
 	public LispForm expandMacros(SymbolTable symbolTable) throws SyntaxException{
 		return this;

@@ -19,6 +19,7 @@ public class Parser {
 				token = tokenizer.nextToken();
 				continue;
 			}
+			
 				
 			if(token.getCode() == Token.OPENING_PARENTHESIS){
 				List newList = new List();
@@ -32,11 +33,33 @@ public class Parser {
 					throw new SyntaxException("Unmatched close parenthesis");
 				
 				return res;
+			}else if(token.getCode() == Token.QUOTE || token.getCode() == Token.BACKQUOTE || token.getCode() == Token.COMMA || token.getCode() == Token.COMMA_AT){
+				List newList = new List();
+				if(token.getCode() == Token.QUOTE){
+					newList.addChild(new Symbol("quote"));
+				}else if(token.getCode() == Token.BACKQUOTE){
+					newList.addChild(new Symbol("backquote"));
+				}else if(token.getCode() == Token.COMMA){
+					newList.addChild(new Symbol("comma"));
+				}else if(token.getCode() == Token.COMMA_AT){
+					newList.addChild(new Symbol("comma_at"));
+				}
+				java.util.List<LispForm> children = read(tokenizer, st, openedParenthesis);
+				if(children.size() == 0)
+					throw new SyntaxException("Trailing comma");
+				
+				newList.addChild(children.get(0));
+				newForm = newList;
+				res.add(newForm);
+				
+				for(int i=1; i<children.size(); ++i)
+					res.add(children.get(i));
+				
+				return res;
 			}else if(token.getCode() == Token.INT){
 				newForm = new Int(token.getValue());
 			}else
 				newForm = new Symbol(token.getValue());
-			
 			
 			res.add(newForm);
 			token = tokenizer.nextToken();

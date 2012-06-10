@@ -36,6 +36,11 @@ public class Tokenizer implements ITokenizer{
 		patterns.add(new CodeAndPattern(Token.DOUBLE, begin + "([\\+-]?[0-9]+\\.[0-9]*d[0-9]+)" + end));
 		patterns.add(new CodeAndPattern(Token.STRING, begin + "\"(.*)\"" + end));
 		patterns.add(new CodeAndPattern(Token.SYMBOL, begin + "([^\\s\\(\\)'\"`,:;\\\\|]+)" + end));
+		patterns.add(new CodeAndPattern(Token.QUOTE, begin + "(')"));
+		patterns.add(new CodeAndPattern(Token.BACKQUOTE, begin + "(`)"));
+		patterns.add(new CodeAndPattern(Token.COMMA_AT, begin + "(,@)"));
+		patterns.add(new CodeAndPattern(Token.COMMA, begin + "(,)"));
+		patterns.add(new CodeAndPattern(Token.HASH, begin + "(#)"));
 		patterns.add(new CodeAndPattern(Token.COMMENT, begin + ";([^\n]*)"));
 		patterns.add(new CodeAndPattern(Token.UNEXPECTED, begin + "(.+)" + end));
 	}

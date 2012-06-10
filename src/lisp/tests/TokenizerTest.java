@@ -50,6 +50,11 @@ public class TokenizerTest {
 		doTest("0.d55", Token.DOUBLE);
 		doTest("3.3", Token.FLOAT);
 		
+		doTest("'res", Token.QUOTE);
+		doTest("  '(+ 3 4)", Token.QUOTE);
+		
+		doTest(",@(+ 3 4)", Token.COMMA_AT);
+		
 		doTest(";comment\n 33", Token.COMMENT, "comment");
 		
 		tokenizer.loadInput("(let 4 ;comment 12 44\n 3");

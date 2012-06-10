@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import lisp.RT.Runtime;
+import lisp.specialoperators.Comma;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -206,6 +207,29 @@ public class List extends LispForm {
 			child.generateYourself(symbolTable);
 			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/List", "addChild",
 					"(Llisp/LispForm;)V");
+		}
+	}
+	
+	@Override
+	public void compileIfComma(SymbolTable symbolTable)
+			throws SyntaxException {
+		if (children.size() > 0){
+			if(children.get(0) instanceof Symbol && ((Symbol) children.get(0)).getName() == "comma"){
+				Comma comma = new Comma();
+				comma.setParent(children.get(0).getParent());
+				comma.compileIfComma(symbolTable);
+			}else{
+				MethodVisitor mv = Factory.getMethodVisitor();
+
+				mv.visitTypeInsn(Opcodes.NEW, "lisp/List");
+				mv.visitInsn(Opcodes.DUP);
+				mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/List", "<init>", "()V");
+				for (LispForm child : children) {
+					mv.visitInsn(Opcodes.DUP);
+					child.compileIfComma(symbolTable);
+					mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/List", "addChild", "(Llisp/LispForm;)V");
+				}
+			}
 		}
 	}
 	
