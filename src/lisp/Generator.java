@@ -11,10 +11,18 @@ import org.objectweb.asm.Opcodes;
 
 public class Generator {
 	
-	private static void generateCheckIfInstanceOf(LispForm form, SymbolTable symbolTable, String type, String message) throws SyntaxException{
+	/**
+	 * Stack: variable_to_check -> variable_to_check
+	 * 
+	 * @param form
+	 * @param symbolTable
+	 * @param type - fully qualified type name
+	 * @param message
+	 * @throws SyntaxException
+	 */
+	private static void generateCheckIfInstanceOf(SymbolTable symbolTable, String type, String message) throws SyntaxException{
 		MethodVisitor mv = Factory.getMethodVisitor();
 		
-		form.compile(symbolTable);
 		mv.visitInsn(Opcodes.DUP);
 		
 		Label isList = new Label();
@@ -26,12 +34,12 @@ public class Generator {
 		mv.visitLabel(isList);
 	}
 	
-	public static void generateCheckIfList(LispForm form, SymbolTable symbolTable, String message) throws SyntaxException{
-		generateCheckIfInstanceOf(form, symbolTable, "lisp/List", message);
+	public static void generateCheckIfList(SymbolTable symbolTable, String message) throws SyntaxException{
+		generateCheckIfInstanceOf(symbolTable, "lisp/List", message);
 	}
 	
-	public static void generateCheckIfSymbol(LispForm form, SymbolTable symbolTable, String message) throws SyntaxException{
-		generateCheckIfInstanceOf(form, symbolTable, "lisp/Symbol", message);
+	public static void generateCheckIfSymbol(SymbolTable symbolTable, String message) throws SyntaxException{
+		generateCheckIfInstanceOf(symbolTable, "lisp/Symbol", message);
 	}
 	
 	/**

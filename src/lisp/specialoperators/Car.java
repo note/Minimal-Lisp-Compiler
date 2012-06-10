@@ -21,7 +21,8 @@ public class Car extends SpecialOperator {
 		if(parameters.size() != 1)
 			throw new SyntaxException("Special operator car expects 1 argument (got " + parameters.size() + " arguments");
 		
-		Generator.generateCheckIfList(parameters.get(0), symbolTable, "First argument of car is expected to be a list");
+		parameters.get(0).compile(symbolTable);
+		Generator.generateCheckIfList(symbolTable, "First argument of car is expected to be a list");
 		Generator.generateCastToList();
 		
 		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/List", "getHead", "()Llisp/LispForm;");

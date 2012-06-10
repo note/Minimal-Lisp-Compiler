@@ -63,7 +63,7 @@ public class Compiler {
 	private void test() throws SyntaxException, IOException{
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(print `(+ 4 ,(* 2 5)))");
+		tokenizer.loadInput("(print 77)");
 		java.util.List<LispForm> tree = p.parse(tokenizer);
 		compile(tree);
 	}

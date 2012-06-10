@@ -22,7 +22,8 @@ public class Cons extends SpecialOperator{
 		if(parameters.size() != 2)
 			throw new SyntaxException("Special operator cons expects 2 arguments (got " + parameters.size() + " arguments");
 		
-		Generator.generateCheckIfList(parameters.get(1), symbolTable, "Second argument of cons is expected to be a list");
+		parameters.get(1).compile(symbolTable);
+		Generator.generateCheckIfList(symbolTable, "Second argument of cons is expected to be a list");
 		Generator.generateCastToList();
 		
 		mv.visitInsn(Opcodes.DUP);

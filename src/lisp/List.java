@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import lisp.RT.Runtime;
 import lisp.specialoperators.Comma;
+import lisp.specialoperators.CommaAt;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -152,6 +153,11 @@ public class List extends LispForm {
 				&& ((Symbol) children.get(0)).getName().equals("defun");
 	}
 	
+	public boolean isCommaAt(){
+		return children.size () > 0 && children.get(0) instanceof Symbol
+				&& ((Symbol) children.get(0)).getName().equals("comma_at");
+	}
+	
 	public boolean isMacro() {
 		return children.size() > 0 && children.get(0) instanceof Symbol && ((Symbol) children.get(0)).getName().equals("defmacro");
 	}
@@ -214,8 +220,12 @@ public class List extends LispForm {
 	public void compileIfComma(SymbolTable symbolTable)
 			throws SyntaxException {
 		if (children.size() > 0){
-			if(children.get(0) instanceof Symbol && ((Symbol) children.get(0)).getName() == "comma"){
-				Comma comma = new Comma();
+			if(children.get(0) instanceof Symbol && (((Symbol) children.get(0)).getName() == "comma" || ((Symbol) children.get(0)).getName() == "comma_at")){
+				LispForm comma;
+				if(((Symbol) children.get(0)).getName() == "comma")
+					comma = new Comma();
+				else
+					comma = new CommaAt();
 				comma.setParent(children.get(0).getParent());
 				comma.compileIfComma(symbolTable);
 			}else{
@@ -227,7 +237,8 @@ public class List extends LispForm {
 				for (LispForm child : children) {
 					mv.visitInsn(Opcodes.DUP);
 					child.compileIfComma(symbolTable);
-					mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/List", "addChild", "(Llisp/LispForm;)V");
+					if(!(child instanceof List && ((List) child).isCommaAt())) // CommaAt is treated specially because it might return multiple-value result
+						mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/List", "addChild", "(Llisp/LispForm;)V");
 				}
 			}
 		}
@@ -239,5 +250,13 @@ public class List extends LispForm {
 			if(children.get(0) instanceof Symbol)
 				return handleSymbol((Symbol) children.get(0), st).getLambda(st);
 		return null;
+	}
+	
+	/**
+	 * This method should be used only during runtime. It assumes that user has ensured that list is non-empty (eg. by calling isEmpty())
+	 * @return
+	 */
+	public LispForm removeFirst(){
+		return children.remove(0);
 	}
 }

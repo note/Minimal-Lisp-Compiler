@@ -49,7 +49,8 @@ public class Funcall extends SpecialOperator {
 		if(parameters.size() != 2)
 			throw new SyntaxException("Special operator funcall expects at least 1 argument (got " + parameters.size() + " arguments");
 		
-		Generator.generateCheckIfSymbol(parameters.get(0), symbolTable, "First arguments of funcall is expected to be a symbol");
+		parameters.get(0).compile(symbolTable);
+		Generator.generateCheckIfSymbol(symbolTable, "First arguments of funcall is expected to be a symbol");
 		Generator.generateCastToSymbol();
 		
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/Symbol", "getName", "()Ljava/lang/String;");
