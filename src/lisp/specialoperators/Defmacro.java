@@ -25,11 +25,20 @@ public class Defmacro extends Defun {
 		java.util.List<LispForm> parameters = getParameters(); 
 		checkArguments(parameters);
 		
-		SymbolTable newSymbolTable = new SymbolTable(symbolTable, createAddrMap((List) parameters.get(1), "defmacro"));
+		List argumentsList = (List) parameters.get(1);
+		
+		// remove &rest
+		boolean hasRest = argumentsList.hasRest();
+		argumentsList.removeRest();
+		
+		SymbolTable newSymbolTable = new SymbolTable(symbolTable, createAddrMap(argumentsList, "defmacro"));
 		
 		Generator.createFunctionClass(getFunctionName());
 		
-		Factory.pushMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invokeMacro", generateMethodDescriptor(((List) parameters.get(1)).size()), null, null), false);
+		if(hasRest)
+			Factory.pushMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invokeMacroRest", generateMethodDescriptor(argumentsList.size()), null, null), false);
+		else
+			Factory.pushMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invokeMacro", generateMethodDescriptor(argumentsList.size()), null, null), false);
 		
 		parameters.get(2).compile(newSymbolTable);
 		

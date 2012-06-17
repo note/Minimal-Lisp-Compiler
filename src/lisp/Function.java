@@ -20,7 +20,7 @@ public class Function extends Symbol {
 
 	private void generateResolveFunction() {
 		Factory.getMethodVisitor().visitLdcInsn(functionName);
-		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC,"lisp/RT/Runtime", "getFunctionParametersLength","(Ljava/lang/String;)I");
+		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "getFunctionParametersLength","(Ljava/lang/String;)I");
 	}
 
 	private void generatePushParameters(SymbolTable st) throws SyntaxException {
@@ -49,15 +49,34 @@ public class Function extends Symbol {
 		Generator.generateRuntimeException("Function " + name + " not found");
 
 		mv.visitLabel(functionFound);
+		
+		//stack: numberOfParametersInt
+		Label hasRest = new Label();
+		mv.visitLdcInsn(functionName);
+		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "hasRest","(Ljava/lang/String;)Z");
+		mv.visitJumpInsn(Opcodes.IFNE, hasRest);
 
 		mv.visitLdcInsn(parameters.size());
-		Label end = new Label();
-		mv.visitJumpInsn(Opcodes.IF_ICMPEQ, end);
+		Label ok = new Label();
+		mv.visitJumpInsn(Opcodes.IF_ICMPEQ, ok);
 
 		Generator.generateRuntimeException("Invalid number of arguments: " + parameters.size());
 
-		mv.visitLabel(end);
+		mv.visitLabel(ok);
+		
 		generatePushParameters(symbolTable);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, functionName, "invoke",generateMethodDescriptor(parameters.size()));
+		Label end = new Label();
+		mv.visitJumpInsn(Opcodes.GOTO, end);
+		
+		mv.visitLabel(hasRest);
+		mv.visitInsn(Opcodes.POP);
+		//todo: check arguments length 
+		//mv.visitMethodInsn(Opcodes.INVOKESTATIC, functionName, "invoke",generateMethodDescriptor(parameters.size()));
+		mv.visitLdcInsn(functionName);
+		Generator.generatePushParameters(symbolTable, parameters);
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "callWithRest", "(Ljava/lang/String;[Llisp/LispForm;)Llisp/LispForm;");
+		
+		mv.visitLabel(end);
 	}
 }

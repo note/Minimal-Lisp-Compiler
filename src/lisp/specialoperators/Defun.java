@@ -46,13 +46,21 @@ public class Defun extends SpecialOperator{
 	public void compile(SymbolTable symbolTable) throws SyntaxException {		
 		java.util.List<LispForm> parameters = getParameters(); 
 		checkArguments(parameters);
+		List argumentsList = (List) parameters.get(1);
 		
-		SymbolTable newSymbolTable = new SymbolTable(symbolTable, createAddrMap((List) parameters.get(1), "defun"));
+		// remove &rest
+		boolean hasRest = argumentsList.hasRest();
+		argumentsList.removeRest();
+		
+		SymbolTable newSymbolTable = new SymbolTable(symbolTable, createAddrMap(argumentsList, "defun"));
 		
 		Generator.createFunctionClass(getFunctionName());
 		
 		if(!getFunctionName().equals("Main"))
-			Factory.pushMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invoke", generateMethodDescriptor(((List) parameters.get(1)).size()), null, null), false);
+			if(hasRest)
+				Factory.pushMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invokeRest", generateMethodDescriptor(argumentsList.size()), null, null), false);
+			else
+				Factory.pushMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "invoke", generateMethodDescriptor(argumentsList.size()), null, null), false);
 		else
 			Factory.pushMethodVisitor(Factory.getClassWriter().visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null), false);
 		

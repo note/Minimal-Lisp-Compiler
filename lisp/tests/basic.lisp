@@ -157,6 +157,7 @@ x
 (print `(3 4 ,@(list 7 8)))
 (print `(,(g) 100))
 (print `(,@(g) 100))
+(print `(ff 2 ,@(list 5 6)))
 
 ;begin
 (+ x 5)
@@ -169,4 +170,14 @@ x
 (3 4 7 8)
 ((5 6 7) 100)
 (5 6 7 100)
+(ff 2 5 6)
+;end
+
+;; &REST
+
+(defun f (x &rest y) (+ x (car y)))
+(print (f 4 7 11 13))
+
+;begin
+11
 ;end

@@ -71,7 +71,7 @@ public class Symbol extends LispForm{
 		/*
 		 * A few assumptions here:
 		 * - all arguments must be one-word size.
-		 * - consecutive arguments are numbered with next negative indexes starting from zero (caller must follow this convention)
+		 * - consecutive arguments are numbered with next negative indexes starting from -1 (caller must follow this convention)
 		 */
 		int index = -1;
 		for(LispForm it : list.getChildren()){

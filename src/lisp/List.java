@@ -252,6 +252,26 @@ public class List extends LispForm {
 		return null;
 	}
 	
+	public boolean hasRest() throws SyntaxException{
+		for(int i=0; i<children.size(); ++i){
+			if(!(children.get(i) instanceof Symbol))
+				throw new SyntaxException("Elements of argument list should be symbols");
+			if(((Symbol) children.get(i)).getName().equals("&rest"))
+				if(i != children.size() - 2)
+					throw new SyntaxException("&rest is expected to be followed by exactly one argument name");
+				else
+					return true;
+		}
+		return false;
+	}
+	
+	public void removeRest() throws SyntaxException{
+		java.util.List tmp = new ArrayList(children);
+		for(int i=0; i<tmp.size(); ++i)
+			if((tmp.get(i) instanceof Symbol) && ((Symbol) tmp.get(i)).getName().equals("&rest"))
+				children.remove(i);
+	}
+	
 	/**
 	 * This method should be used only during runtime. It assumes that user has ensured that list is non-empty (eg. by calling isEmpty())
 	 * @return

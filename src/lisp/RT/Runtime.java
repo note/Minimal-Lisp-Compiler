@@ -62,9 +62,13 @@ class ClassPrinter extends ClassVisitor {
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		if(name.equals("invoke"))
 			// if desc = "()LispForm;" then desc.split(";").length == 1
-			Runtime.addFunction(desc.split(";").length - 1);
+			Runtime.addFunction(desc.split(";").length - 1, false);
+		if(name.equals("invokeRest"))
+			Runtime.addFunction(desc.split(";").length - 1, true);
 		if(name.equals("invokeMacro"))
-			Runtime.addMacro(desc.split(";").length - 1);
+			Runtime.addMacro(desc.split(";").length - 1, false);
+		if(name.equals("invokeMacroRest"))
+			Runtime.addMacro(desc.split(";").length - 1, true);
 		return null;
 	}
 
@@ -76,6 +80,7 @@ class ClassPrinter extends ClassVisitor {
 public class Runtime {
 	private static HashMap<String, Integer> functions = new HashMap<String, Integer>();
 	private static HashMap<String, Integer> macros = new HashMap<String, Integer>();
+	private static HashMap<String, Boolean> rest = new HashMap<String, Boolean>();
 	private static String currentFunctionName;
 	
 	static{
@@ -108,12 +113,14 @@ public class Runtime {
 		}
 	}
 	
-	public static void addFunction(int num){
+	public static void addFunction(int num, boolean hasRest){
 		functions.put(currentFunctionName, num);
+		rest.put(currentFunctionName, hasRest);
 	}
 	
-	public static void addMacro(int num){
+	public static void addMacro(int num, boolean hasRest){
 		macros.put(currentFunctionName, num);
+		rest.put(currentFunctionName, hasRest);
 	}
 	
 	public static int getFunctionParametersLength(String name){
@@ -125,6 +132,16 @@ public class Runtime {
 	
 	public static int getMacroParametersLength(String name){
 		Integer res = macros.get(name);
+		if(res != null)
+			return res;
+		return -1;
+	}
+	
+	public static int getParametersLength(String name){
+		Integer res = functions.get(name);
+		if(res != null)
+			return res;
+		res = macros.get(name);
 		if(res != null)
 			return res;
 		return -1;
@@ -142,7 +159,11 @@ public class Runtime {
 		return (form instanceof List) && ((List) form).isEmpty(); 
 	}
 	
-	public static LispForm funcall(String functionName, Object [] args){
+	public static boolean hasRest(String name){
+		return rest.get(name);
+	}
+	
+	public static LispForm funcall(String functionName, LispForm [] args){
 		Class clazz;
 		try {
 			clazz = Class.forName(functionName);
@@ -151,6 +172,51 @@ public class Runtime {
 				types [i]= LispForm.class;
 			Method m = clazz.getDeclaredMethod("invoke", types);
 			return (LispForm) m.invoke(null, args);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static LispForm callWithRest(String functionName, LispForm [] args){
+		Class clazz;
+		try {			
+			int parametersLength = Runtime.getParametersLength(functionName);
+			
+			LispForm [] actualArgs = new LispForm[parametersLength];
+			clazz = Class.forName(functionName);
+			Class [] types = new Class[parametersLength];
+			
+			for(int i=0; i<parametersLength-1; ++i){
+				types [i]= LispForm.class;
+				actualArgs[i] = args[i];
+			}
+			types[parametersLength-1] = LispForm.class;
+				
+			List lastArg = new List();
+			for(int i = parametersLength-1; i<args.length; ++i)
+				lastArg.addChild(args[i]);
+			actualArgs[parametersLength-1] = lastArg;
+			
+			Method m = clazz.getDeclaredMethod("invokeRest", types);		
+			
+			return (LispForm) m.invoke(null, actualArgs);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

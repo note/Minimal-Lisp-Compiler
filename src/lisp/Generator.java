@@ -89,4 +89,23 @@ public class Generator {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void generatePushParameters(SymbolTable st, java.util.List<LispForm> parameters) throws SyntaxException {
+		MethodVisitor mv = Factory.getMethodVisitor();
+		mv.visitLdcInsn(parameters.size());
+		mv.visitTypeInsn(Opcodes.ANEWARRAY, "lisp/LispForm");
+		
+		for (int i = 0; i < parameters.size(); ++i)
+			if (parameters.get(i) instanceof Int
+					|| parameters.get(i) instanceof List
+					|| parameters.get(i) instanceof Variable){
+				
+				mv.visitInsn(Opcodes.DUP); //arrayref
+				mv.visitLdcInsn(i); //index
+				parameters.get(i).compile(st); //value
+				
+				mv.visitInsn(Opcodes.AASTORE);
+			}else
+				throw new SyntaxException("Cannot generate code for pushing function parameter");
+	}
 }

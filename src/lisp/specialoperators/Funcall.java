@@ -19,29 +19,6 @@ public class Funcall extends SpecialOperator {
 		super("funcall");
 	}
 	
-	private void generatePushParameters(SymbolTable st) throws SyntaxException {
-		java.util.List<LispForm> parameters = getParameters();
-		
-		MethodVisitor mv = Factory.getMethodVisitor();
-		mv.visitLdcInsn(parameters.size() - 1);
-		mv.visitTypeInsn(Opcodes.ANEWARRAY, "lisp/LispForm");
-		
-		for (int i = 1; i < parameters.size(); ++i)
-			if (parameters.get(i) instanceof Int
-					|| parameters.get(i) instanceof List
-					|| parameters.get(i) instanceof Variable){
-				
-				mv.visitInsn(Opcodes.DUP); //arrayref
-				mv.visitLdcInsn(i-1); //index
-				parameters.get(i).compile(st); //value
-				
-				mv.visitInsn(Opcodes.AASTORE);
-			}else
-				throw new SyntaxException(
-						"Cannot generate code for pushing function parameter");
-		
-	}
-	
 	@Override
 	public void compile(SymbolTable symbolTable) throws SyntaxException {
 		java.util.List<LispForm> parameters = getParameters();
@@ -72,7 +49,9 @@ public class Funcall extends SpecialOperator {
 		Generator.generateRuntimeException("Invalid number of arguments: " + parameters.size());
 
 		mv.visitLabel(end);
-		generatePushParameters(symbolTable);
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "funcall", "(Ljava/lang/String;[Ljava/lang/Object;)Llisp/LispForm;");
+		java.util.List actualArguments = new java.util.ArrayList(parameters);
+		actualArguments.remove(0);
+		Generator.generatePushParameters(symbolTable, actualArguments);
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "funcall", "(Ljava/lang/String;[Llisp/LispForm;)Llisp/LispForm;");
 	}
 }
