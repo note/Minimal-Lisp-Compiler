@@ -178,6 +178,15 @@ x
 (defun f (x &rest y) (+ x (car y)))
 (print (f 4 7 11 13))
 
+(defun not2 (app) (if app NIL T))
+(defmacro unless2 (test &rest body)
+  `(if (not2 ,test) (progn ,@body)))
+
+(print (unless2 (< 4 2) (print 101) (print 104) 232))
+
 ;begin
 11
+101
+104
+232
 ;end

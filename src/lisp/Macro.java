@@ -18,15 +18,32 @@ public class Macro extends Symbol{
 		Class clazz;
 		try {
 			clazz = Class.forName(macroName);
-			Class [] types = new Class[Runtime.getMacroParametersLength(macroName)];
-			Object [] args = new Object[parameters.size()];
-			for(int i=0; i<parameters.size(); ++i){
-				types [i]= LispForm.class;
-				args [i]= (Object) parameters.get(i);
-			}
-			Method m = clazz.getDeclaredMethod("invokeMacro", types);
+			int parametersLength = Runtime.getMacroParametersLength(macroName);
+			Class [] types = new Class[parametersLength];
+			Object [] args = new Object[parametersLength];
+			Method method = null;
 			
-			return (LispForm) m.invoke(null, args);
+			if(Runtime.hasRest(macroName)){
+				for(int i=0; i<parametersLength-1; ++i){
+					types [i]= LispForm.class;
+					args [i]= (Object) parameters.get(i);
+				}
+				types[parametersLength-1] = LispForm.class;
+				List lastArg = new List();
+				for(int i=parametersLength-1; i<parameters.size(); ++i)
+					lastArg.addChild(parameters.get(i));
+				args[parametersLength-1] = lastArg;
+				
+				method = clazz.getDeclaredMethod("invokeMacroRest", types);
+			}else{
+				for(int i=0; i<parametersLength; ++i){
+					types [i]= LispForm.class;
+					args [i]= (Object) parameters.get(i);
+				}
+				method = clazz.getDeclaredMethod("invokeMacro", types);
+			}
+			
+			return (LispForm) method.invoke(null, args);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
