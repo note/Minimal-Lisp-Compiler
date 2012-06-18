@@ -3,6 +3,7 @@ package lisp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lisp.specialoperators.And;
 import lisp.specialoperators.Backquote;
 import lisp.specialoperators.Car;
 import lisp.specialoperators.Cdr;
@@ -10,7 +11,9 @@ import lisp.specialoperators.Comma;
 import lisp.specialoperators.Cons;
 import lisp.specialoperators.Defmacro;
 import lisp.specialoperators.Defun;
+import lisp.specialoperators.Eval;
 import lisp.specialoperators.Funcall;
+import lisp.specialoperators.Hash;
 import lisp.specialoperators.IfOperator;
 import lisp.specialoperators.Lambda;
 import lisp.specialoperators.Let;
@@ -76,6 +79,9 @@ public class SymbolTable {
 		specialOperatorsMap.put("defmacro", Defmacro.class);
 		specialOperatorsMap.put("backquote", Backquote.class);
 		specialOperatorsMap.put("comma", Comma.class);
+		specialOperatorsMap.put("eval", Eval.class);
+		specialOperatorsMap.put("hash", Hash.class);
+		specialOperatorsMap.put("and", And.class);
 	}
 	
 	/**

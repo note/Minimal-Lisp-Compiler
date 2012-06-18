@@ -43,7 +43,7 @@ public class Defun extends SpecialOperator{
 	}
 	
 	@Override
-	public void compile(SymbolTable symbolTable) throws SyntaxException {		
+	public void compile(SymbolTable symbolTable) throws SyntaxException {
 		java.util.List<LispForm> parameters = getParameters(); 
 		checkArguments(parameters);
 		List argumentsList = (List) parameters.get(1);

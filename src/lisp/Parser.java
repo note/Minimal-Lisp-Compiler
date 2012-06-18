@@ -33,7 +33,7 @@ public class Parser {
 					throw new SyntaxException("Unmatched close parenthesis");
 				
 				return res;
-			}else if(token.getCode() == Token.QUOTE || token.getCode() == Token.BACKQUOTE || token.getCode() == Token.COMMA || token.getCode() == Token.COMMA_AT){
+			}else if(token.getCode() == Token.QUOTE || token.getCode() == Token.BACKQUOTE || token.getCode() == Token.COMMA || token.getCode() == Token.COMMA_AT || token.getCode() == Token.HASH){
 				List newList = new List();
 				if(token.getCode() == Token.QUOTE){
 					newList.addChild(new Symbol("quote"));
@@ -43,6 +43,8 @@ public class Parser {
 					newList.addChild(new Symbol("comma"));
 				}else if(token.getCode() == Token.COMMA_AT){
 					newList.addChild(new Symbol("comma_at"));
+				}else if(token.getCode() == Token.HASH){
+					newList.addChild(new Symbol("hash"));
 				}
 				java.util.List<LispForm> children = read(tokenizer, st, openedParenthesis);
 				if(children.size() == 0)

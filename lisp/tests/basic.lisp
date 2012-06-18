@@ -190,3 +190,52 @@ x
 104
 232
 ;end
+
+;; HASH
+
+(defun ff (x) (* x x))
+(print (funcall #'ff 5))
+
+;begin
+25
+;end
+
+;; AND
+
+(print (and (+ 3 4) (* 5 7)))
+(print (and (+ 3 4) (> 5 14) (* 5 7)))
+(print (and))
+(let ((x 10) (y 33)) (print (and (< x y) (+ 3 5))))
+(let ((x 10) (y 33)) (and (progn (print 1) (< x y)) (progn (print 2) (> x y)) (progn (print 3))))
+
+;begin
+35
+NIL
+T
+8
+1
+2
+;end
+
+;; APPLY
+
+(print (apply #'+ '(2 3)))
+(print (defun f (a b c) (list a b c)))
+(print (apply #'f '(1 (+ 2 3) 6)))
+
+;begin
+5
+f
+(1 (+ 2 3) 6)
+;end
+
+;; EVAL
+
+(defun f () `(print 55))
+(print (f))
+(eval (f))
+
+;begin
+(print 55)
+55
+;end

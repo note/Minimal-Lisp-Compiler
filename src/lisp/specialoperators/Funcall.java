@@ -23,7 +23,7 @@ public class Funcall extends SpecialOperator {
 	public void compile(SymbolTable symbolTable) throws SyntaxException {
 		java.util.List<LispForm> parameters = getParameters();
 		MethodVisitor mv = Factory.getMethodVisitor();
-		if(parameters.size() != 2)
+		if(parameters.size() < 1)
 			throw new SyntaxException("Special operator funcall expects at least 1 argument (got " + parameters.size() + " arguments");
 		
 		parameters.get(0).compile(symbolTable);

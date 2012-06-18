@@ -16,10 +16,7 @@ public class Variable extends Symbol{
 		MethodVisitor mv = Factory.getMethodVisitor();
 		
 		if(name.equals("T")){
-			mv.visitTypeInsn(Opcodes.NEW, "lisp/Symbol");
-			mv.visitInsn(Opcodes.DUP);
-			mv.visitLdcInsn(name);
-			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/Symbol", "<init>", "(Ljava/lang/String;)V");
+			Generator.generateT();
 		}else if(name.equals("NIL")){
 			Generator.generateEmptyList();
 		}else{

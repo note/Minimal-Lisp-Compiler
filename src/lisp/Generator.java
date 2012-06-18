@@ -68,6 +68,14 @@ public class Generator {
 		Factory.getMethodVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/List", "createEmptyList", "()Llisp/List;");
 	}
 	
+	public static void generateT(){
+		MethodVisitor mv = Factory.getMethodVisitor();
+		mv.visitTypeInsn(Opcodes.NEW, "lisp/Symbol");
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn("T");
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "lisp/Symbol", "<init>", "(Ljava/lang/String;)V");
+	}
+	
 	public static void createFunctionClass(String className){
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 		Factory.pushClassWriter(cw);
