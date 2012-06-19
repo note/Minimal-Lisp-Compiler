@@ -44,11 +44,40 @@ T
 (4 3 2 1)
 ;end
 
-;; incf
+;; incf and 1+
 
 (let ((x 15)) (print (incf x)) (print x))
+(let ((x 25)) (print (1+ x)) (print x))
 
 ;begin
 16
 16
+26
+25
+;end
+
+;; nth
+
+(print (nth 3 '(0 1 2 3 4 5)))
+(print (nth 8 '(0 1 2 3 4 5)))
+
+;begin
+3
+NIL
+;end
+
+;; list-length
+
+(print (list-length (list)))
+(print (list-length '(1 2 3 4)))
+
+;begin
+0
+4
+;end
+
+(do ((i 0 (+ 3 i))) ((> i 10) i) (print i))
+
+;begin
+12
 ;end

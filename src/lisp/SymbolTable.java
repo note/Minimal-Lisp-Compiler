@@ -61,6 +61,7 @@ public class SymbolTable {
 		aliases.put("*", "_mul");
 		aliases.put("<", "_lower");
 		aliases.put(">", "_greater");
+		aliases.put("=", "_equals");
 		
 		definedConstants.add("NIL");
 		definedConstants.add("T");
