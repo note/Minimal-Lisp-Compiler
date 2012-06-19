@@ -92,7 +92,7 @@ public class Generator {
 	
 	public static void saveFile(String functionName, ClassWriter cw){
 		try {
-			FileOutputStream out = new FileOutputStream(outputDir + "/" + functionName + ".class");
+			FileOutputStream out = new FileOutputStream(Generator.outputDir + "/" + functionName + ".class");
 			out.write(cw.toByteArray());
 			out.close();
 			Factory.popClassWriter();

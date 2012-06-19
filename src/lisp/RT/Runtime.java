@@ -98,14 +98,14 @@ public class Runtime {
 		return files;
 	}
 
-	public static void init(){
-		String[] names = getClassNames(".");
+	private static void initForDir(String dir){
+		String[] names = getClassNames(dir);
 		ClassPrinter cp = new ClassPrinter();
 		for(int i=0; i<names.length; ++i){
 			currentFunctionName = names[i];
 			ClassReader cr;
 			try {
-				cr = new ClassReader(new FileInputStream(names[i] + ".class"));
+				cr = new ClassReader(new FileInputStream(dir + "/" + names[i] + ".class"));
 				cr.accept(cp, 0);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -113,6 +113,11 @@ public class Runtime {
 			}
 			
 		}
+	}
+	
+	public static void init(){
+		initForDir("generated");
+		initForDir("std_lib");
 	}
 	
 	public static void addFunction(int num, boolean hasRest){

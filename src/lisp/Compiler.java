@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Compiler {
-	private String outputDir;
+	private String outputDir = ".";
 	private String filename;
 	
 	private boolean parseArguments(String [] args){
@@ -81,7 +81,7 @@ public class Compiler {
 		Generator.setOutputDir("generated");
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(print (defun gg (x) (* x x)))");
+		tokenizer.loadInput("(print (+ 2 6))");
 //		tokenizer.loadInput("(print (let ((fn (lambda (x) (* x x)))) (funcall fn 4)))");
 		java.util.List<LispForm> tree = p.parse(tokenizer);
 		compile(tree);
@@ -89,16 +89,16 @@ public class Compiler {
 	
 	public static void main(String [] args){	
 		Compiler compiler = new Compiler();
-//		compiler.run(args);
+		compiler.run(args);
 		
-		try {
-			compiler.test();
-		} catch (SyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			compiler.test();
+//		} catch (SyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }
