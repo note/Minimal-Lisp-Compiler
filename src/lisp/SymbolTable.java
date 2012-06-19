@@ -14,6 +14,7 @@ import lisp.specialoperators.Defmacro;
 import lisp.specialoperators.Defun;
 import lisp.specialoperators.Eval;
 import lisp.specialoperators.Funcall;
+import lisp.specialoperators.Gensym;
 import lisp.specialoperators.Hash;
 import lisp.specialoperators.IfOperator;
 import lisp.specialoperators.Lambda;
@@ -85,6 +86,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("hash", Hash.class);
 		specialOperatorsMap.put("and", And.class);
 		specialOperatorsMap.put("apply", Apply.class);
+		specialOperatorsMap.put("gensym", Gensym.class);
 	}
 	
 	/**

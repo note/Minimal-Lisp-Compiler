@@ -77,7 +77,6 @@ public class Defun extends SpecialOperator{
 		
 		Generator.saveFile(getFunctionName(), Factory.getClassWriter());
 		
-//		if(!getFunctionName().equals("Main")){
 		if(parent != null && parent.getParent() != null){
 			Symbol symbol = new Symbol(getFunctionName());
 			symbol.generateYourself(symbolTable);

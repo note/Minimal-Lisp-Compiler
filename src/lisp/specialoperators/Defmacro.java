@@ -7,6 +7,7 @@ import lisp.Generator;
 import lisp.LispForm;
 import lisp.List;
 import lisp.SpecialOperator;
+import lisp.Symbol;
 import lisp.SymbolTable;
 import lisp.SyntaxException;
 
@@ -49,6 +50,11 @@ public class Defmacro extends Defun {
 		Factory.getClassWriter().visitEnd();
 		
 		Generator.saveFile(getFunctionName(), Factory.getClassWriter());
+		
+		if(parent != null && parent.getParent() != null){
+			Symbol symbol = new Symbol(getFunctionName());
+			symbol.generateYourself(symbolTable);
+		}
 	}
 
 }
