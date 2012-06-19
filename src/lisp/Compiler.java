@@ -81,7 +81,7 @@ public class Compiler {
 		Generator.setOutputDir("generated");
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(print (+ 2 6))");
+		tokenizer.loadInput("(when (< 3 5) (print 15) (print 77))");
 //		tokenizer.loadInput("(print (let ((fn (lambda (x) (* x x)))) (funcall fn 4)))");
 		java.util.List<LispForm> tree = p.parse(tokenizer);
 		compile(tree);
@@ -90,7 +90,7 @@ public class Compiler {
 	public static void main(String [] args){	
 		Compiler compiler = new Compiler();
 		compiler.run(args);
-		
+//		
 //		try {
 //			compiler.test();
 //		} catch (SyntaxException e) {
