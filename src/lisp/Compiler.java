@@ -5,12 +5,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Compiler {
+	private String outputDir;
+	private String filename;
+	
 	private boolean parseArguments(String [] args){
 		if(args.length < 1){
 			System.out.println("No input file");
 			return false;
+		}else{
+			boolean loadOutputDir = false;
+			for(int i=0; i<args.length; ++i){
+				if(loadOutputDir){
+					outputDir = args[i];
+				}else{
+					if(args[i].equals("-o"))
+						loadOutputDir = true;
+					else
+						filename = args[i];
+				}
+			}
+			
+			return true;
 		}
-		return true;
 	}
 	
 	private java.util.List<LispForm> addTopLevelToMain(java.util.List<LispForm> tree){
@@ -44,7 +60,8 @@ public class Compiler {
 		if(parseArguments(args)){
 			try {
 				FileTokenizer tokenizer = new FileTokenizer();
-				tokenizer.loadFile(args[0]);
+				tokenizer.loadFile(filename);
+				Generator.setOutputDir(outputDir);
 				Parser parser = new Parser();
 				java.util.List<LispForm> tree = parser.parse(tokenizer);
 				compile(tree);				
@@ -61,9 +78,10 @@ public class Compiler {
 	}
 	
 	private void test() throws SyntaxException, IOException{
+		Generator.setOutputDir("generated");
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(print (defun f (x) (* x x)))");
+		tokenizer.loadInput("(print (defun gg (x) (* x x)))");
 //		tokenizer.loadInput("(print (let ((fn (lambda (x) (* x x)))) (funcall fn 4)))");
 		java.util.List<LispForm> tree = p.parse(tokenizer);
 		compile(tree);
@@ -71,16 +89,16 @@ public class Compiler {
 	
 	public static void main(String [] args){	
 		Compiler compiler = new Compiler();
-		compiler.run(args);
+//		compiler.run(args);
 		
-//		try {
-//			compiler.test();
-//		} catch (SyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			compiler.test();
+		} catch (SyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

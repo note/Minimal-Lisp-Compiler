@@ -4,12 +4,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.print.attribute.standard.OutputDeviceAssigned;
+
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class Generator {
+	private static String outputDir = ".";
+	
+	public static void setOutputDir(String output){
+		outputDir = output;
+	}
 	
 	/**
 	 * Stack: variable_to_check -> variable_to_check
@@ -85,7 +92,7 @@ public class Generator {
 	
 	public static void saveFile(String functionName, ClassWriter cw){
 		try {
-			FileOutputStream out = new FileOutputStream(functionName + ".class");
+			FileOutputStream out = new FileOutputStream(outputDir + "/" + functionName + ".class");
 			out.write(cw.toByteArray());
 			out.close();
 			Factory.popClassWriter();
