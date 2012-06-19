@@ -15,20 +15,22 @@ import lisp.SyntaxException;
 import lisp.Variable;
 
 public class Funcall extends SpecialOperator {
+	public Funcall(String name){
+		super(name);
+	}
+	
 	public Funcall() {
 		super("funcall");
 	}
 	
-	@Override
-	public void compile(SymbolTable symbolTable) throws SyntaxException {
+	protected void checkParameters(SymbolTable symbolTable, String operatorName) throws SyntaxException {
 		java.util.List<LispForm> parameters = getParameters();
 		MethodVisitor mv = Factory.getMethodVisitor();
-		if(parameters.size() < 1)
-			throw new SyntaxException("Special operator funcall expects at least 1 argument (got " + parameters.size() + " arguments");
 		
 		parameters.get(0).compile(symbolTable);
-		Generator.generateCheckIfSymbol(symbolTable, "First arguments of funcall is expected to be a symbol");
+		Generator.generateCheckIfSymbol(symbolTable, "First argument of " + operatorName + " is expected to be a symbol");
 		Generator.generateCastToSymbol();
+		//stack: Symbol
 		
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "lisp/Symbol", "getName", "()Ljava/lang/String;");
 		mv.visitInsn(Opcodes.DUP); //function name will be needed when calling Runtime.funcall()
@@ -36,12 +38,26 @@ public class Funcall extends SpecialOperator {
 		
 		Label functionFound = new Label();
 		mv.visitInsn(Opcodes.DUP);
+		//stack: String(functionName), NumberOfParameters, NumberOfParameters
 		mv.visitJumpInsn(Opcodes.IFGE, functionFound);
 
 		Generator.generateRuntimeException("Function " + name + " not found");
 
 		mv.visitLabel(functionFound);
+		//stack: String(functionName), NumberOfParameters
 
+	}
+	
+	@Override
+	public void compile(SymbolTable symbolTable) throws SyntaxException {
+		java.util.List<LispForm> parameters = getParameters();
+		MethodVisitor mv = Factory.getMethodVisitor();
+		
+		if(parameters.size() < 1)
+			throw new SyntaxException("Special operator funcall expects at least 1 argument (got " + parameters.size() + " arguments");
+		
+		checkParameters(symbolTable, "funcall");
+		
 		mv.visitLdcInsn(parameters.size() - 1);
 		Label end = new Label();
 		mv.visitJumpInsn(Opcodes.IF_ICMPEQ, end);
@@ -49,7 +65,7 @@ public class Funcall extends SpecialOperator {
 		Generator.generateRuntimeException("Invalid number of arguments: " + parameters.size());
 
 		mv.visitLabel(end);
-		java.util.List actualArguments = new java.util.ArrayList(parameters);
+		java.util.List<LispForm> actualArguments = new java.util.ArrayList<LispForm>(parameters);
 		actualArguments.remove(0);
 		Generator.generatePushParameters(symbolTable, actualArguments);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lisp/RT/Runtime", "funcall", "(Ljava/lang/String;[Llisp/LispForm;)Llisp/LispForm;");

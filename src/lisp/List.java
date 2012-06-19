@@ -92,18 +92,18 @@ public class List extends LispForm {
 	public LispForm expandMacros(SymbolTable st) throws SyntaxException{
 		if(children.size() > 0){
 			if(children.get(0) instanceof Symbol){
-				Symbol macro = (Symbol) children.get(0);
-				if(macro.getName().equals("quote"))
+				Symbol first = (Symbol) children.get(0);
+				if(first.getName().equals("quote"))
 					return this;
 				
 				java.util.List<LispForm> expandedChildren = new java.util.ArrayList<LispForm>();
 				for(LispForm child : children)
 					expandedChildren.add(child.expandMacros(st));
 				
-				if(Runtime.isMacro(macro.getName())){
+				if(Runtime.isMacro(first.getName())){
 					List list = new List();
 					list.setChildren(expandedChildren);
-					Macro m = new Macro(macro.getName());
+					Macro m = new Macro(first.getName());
 					m.setParent(list);
 					return m.expandMacros(st);
 				}else{
@@ -117,9 +117,10 @@ public class List extends LispForm {
 	}
 
 	public void setChildren(java.util.List<LispForm> children) {
-		Iterator<LispForm> it = children.iterator();
-		while (it.hasNext())
-			this.children.add(it.next());
+		for(LispForm child : children){
+			this.children.add(child);
+			child.setParent(this);
+		}		
 	}
 
 	public java.util.List<LispForm> getChildren() {

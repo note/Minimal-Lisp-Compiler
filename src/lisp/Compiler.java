@@ -63,7 +63,7 @@ public class Compiler {
 	private void test() throws SyntaxException, IOException{
 		Parser p = new Parser();
 		Tokenizer tokenizer = new Tokenizer();
-		tokenizer.loadInput("(print (and))");
+		tokenizer.loadInput("(print (defun f (x) (* x x)))");
 //		tokenizer.loadInput("(print (let ((fn (lambda (x) (* x x)))) (funcall fn 4)))");
 		java.util.List<LispForm> tree = p.parse(tokenizer);
 		compile(tree);

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import lisp.LispForm;
 import lisp.LispRuntimeException;
 import lisp.List;
+import lisp.SymbolTable;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -82,6 +83,7 @@ public class Runtime {
 	private static HashMap<String, Integer> macros = new HashMap<String, Integer>();
 	private static HashMap<String, Boolean> rest = new HashMap<String, Boolean>();
 	private static String currentFunctionName;
+	private static SymbolTable st = new SymbolTable();
 	
 	static{
 		init();
@@ -124,6 +126,10 @@ public class Runtime {
 	}
 	
 	public static int getFunctionParametersLength(String name){
+//		System.out.println("!!!!!!!!!");
+//		System.out.println(name);
+		name = st.getFunctionName(name);
+//		System.out.println(name);
 		Integer res = functions.get(name);
 		if(res != null)
 			return res;
@@ -132,6 +138,7 @@ public class Runtime {
 	
 	public static int getMacroParametersLength(String name){
 		Integer res = macros.get(name);
+		name = st.getFunctionName(name);
 		if(res != null)
 			return res;
 		return -1;
@@ -148,7 +155,7 @@ public class Runtime {
 	}
 	
 	public static boolean isMacro(String name){
-		return macros.containsKey(name);
+		return macros.containsKey(st.getFunctionName(name));
 	}
 	
 	public static void throwRuntimeException(String message){
@@ -156,15 +163,16 @@ public class Runtime {
 	}
 	
 	public static boolean isNil(LispForm form){
-		return (form instanceof List) && ((List) form).isEmpty(); 
+		return (form instanceof List) && ((List) form).isEmpty();
 	}
 	
 	public static boolean hasRest(String name){
-		return rest.get(name);
+		return rest.get(st.getFunctionName(name));
 	}
 	
 	public static LispForm funcall(String functionName, LispForm [] args){
 		Class clazz;
+		functionName = st.getFunctionName(functionName);
 		try {
 			clazz = Class.forName(functionName);
 			Class [] types = new Class[args.length];
@@ -196,6 +204,7 @@ public class Runtime {
 	
 	public static LispForm callWithRest(String functionName, LispForm [] args){
 		Class clazz;
+		functionName = st.getFunctionName(functionName);
 		try {			
 			int parametersLength = Runtime.getParametersLength(functionName);
 			
@@ -237,5 +246,20 @@ public class Runtime {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static LispForm apply(String functionName, int expectedNumberOfParameters, List arguments){
+		LispForm [] tmp = new LispForm[1];
+		functionName = st.getFunctionName(functionName);
+		
+		if(Runtime.hasRest(functionName)){
+			if(arguments.size() < expectedNumberOfParameters)
+				Runtime.throwRuntimeException("Invalid number of arguments: " + arguments.size());
+			return Runtime.callWithRest(functionName, arguments.getChildren().toArray(tmp));
+		}else{
+			if(arguments.size() != expectedNumberOfParameters)
+				Runtime.throwRuntimeException("Invalid number of arguments: " + arguments.size());
+			return Runtime.funcall(functionName, arguments.getChildren().toArray(tmp));
+		}
 	}
 }

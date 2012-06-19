@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import lisp.specialoperators.And;
+import lisp.specialoperators.Apply;
 import lisp.specialoperators.Backquote;
 import lisp.specialoperators.Car;
 import lisp.specialoperators.Cdr;
@@ -82,6 +83,7 @@ public class SymbolTable {
 		specialOperatorsMap.put("eval", Eval.class);
 		specialOperatorsMap.put("hash", Hash.class);
 		specialOperatorsMap.put("and", And.class);
+		specialOperatorsMap.put("apply", Apply.class);
 	}
 	
 	/**
